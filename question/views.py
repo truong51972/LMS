@@ -7,8 +7,13 @@ from module_group.models import ModuleGroup
 def question_list(request):
     module_groups = ModuleGroup.objects.all()
     questions = Question.objects.all()
-    print(module_groups)
-    print(questions)
+    answer = Answer.objects.all()
+
+    # print(module_groups)
+    # print(questions)
+    # print(questions[0].category)
+    # print(questions[0].subject)
+    # print(answer)
     return render(request, 'question_list.html', {'questions': questions, 'module_groups':module_groups})
 
 def question_detail(request, pk):
@@ -27,7 +32,7 @@ def question_add(request):
 
             for is_position_correct in is_position_corrects:
                 is_corrects[int(is_position_correct)] = True
-            
+     
             for i in range(len(answer_texts)):
                 Answer.objects.create(
                     question=question,
@@ -35,7 +40,7 @@ def question_add(request):
                     is_correct=is_corrects[i]
                 )
 
-            return redirect('question_list')
+            return redirect('/question')
     else:
         question_form = QuestionForm()
     return render(request, 'question_add.html', {'question_form': question_form})

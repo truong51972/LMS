@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="mb-4">Question List</h2>
-    
+
     <table class="table">
         <thead>
             <tr>
@@ -24,14 +24,14 @@
                 <td>{{ question.correct_answer }}</td>
                 <td>
                     {% if question.subject %}
-                        {{ question.subject.name }}
+                        {{ question.subject }}
                     {% else %}
                         No Subject
                     {% endif %}
                 </td>
                 <td>
                     {% if question.category %}
-                        {{ question.category.name }}
+                        {{ question.category }}
                     {% else %}
                         No Category
                     {% endif %}
@@ -40,8 +40,9 @@
                 <td>
                     <a href="{% url 'question:question_detail' question.pk %}" class="btn btn-info">View</a>
                     <a href="{% url 'question:question_edit' question.pk %}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'question:answer_add' question.pk %}" class="btn btn-primary">Add Answer</a>
-                    <form action="{% url 'question:question_delete' question.pk %}" method="post" style="display:inline;">
+                    {% comment %} <a href="{% url 'question:answer_add' question.pk %}" class="btn btn-primary">Add Answer</a> {% endcomment %}
+                    <form action="{% url 'question:question_delete' question.pk %}" method="post"
+                        style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
@@ -50,7 +51,7 @@
             {% endfor %}
         </tbody>
     </table>
-    
+
     <a href="{% url 'question:question_add' %}" class="btn btn-success">Add New Question</a>
 </div>
 {% endblock %}

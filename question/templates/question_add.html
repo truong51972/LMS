@@ -27,13 +27,13 @@
             <div class="answer-group form-group">
                 <label for="answer_text">Answer</label>
                 <input type="text" name="answer_text[]" class="form-control" placeholder="Enter answer text" required>
-                <label for="is_correct">Correct</label>
-                <input type="checkbox" name="is_correct[]" value="1" class="form-check-input">
+                <input type="checkbox" name="is_correct[]" value="0" class="form-check-input ml-2">
+                <label for="is_correct" class="ml-4">Correct</label>
             </div>
         </div>
         <button type="button" class="btn btn-secondary add-answer">Add Answer</button>
         <hr>
-
+        
         <button type="submit" class="btn btn-success">Save Questions</button>
     </form>
 </div>
@@ -48,8 +48,8 @@
             <div class="answer-group form-group">
                 <label for="answer_text">Answer</label>
                 <input type="text" name="answer_text[]" class="form-control" placeholder="Enter answer text" required>
-                <label for="is_correct">Correct</label>
-                <input type="checkbox" name="is_correct[]" value='${answer_num}' class="form-check-input">
+                <input type="checkbox" name="is_correct[]" value='${answer_num}' class="form-check-input ml-2">
+                <label for="is_correct" class="ml-4">Correct</label>
             </div>
         `;
         
