@@ -7,6 +7,8 @@ from module_group.models import ModuleGroup
 def question_list(request):
     module_groups = ModuleGroup.objects.all()
     questions = Question.objects.all()
+    print(module_groups)
+    print(questions)
     return render(request, 'question_list.html', {'questions': questions, 'module_groups':module_groups})
 
 def question_detail(request, pk):
@@ -19,18 +21,20 @@ def question_add(request):
         if question_form.is_valid():
             question = question_form.save()
             answer_texts = request.POST.getlist('answer_text[]')
-            is_corrects = request.POST.getlist('is_correct[]')
-            if len(answer_texts) != len(is_corrects):
-                return render(request, 'question_add.html', {
-                    'question_form': question_form,
-                    'error': 'Mismatch between answer texts and correctness flags'
-                })
+            is_position_corrects = request.POST.getlist('is_correct[]')
+
+            is_corrects = [False]*len(answer_texts)
+
+            for is_position_correct in is_position_corrects:
+                is_corrects[int(is_position_correct)] = True
+            
             for i in range(len(answer_texts)):
                 Answer.objects.create(
                     question=question,
                     text=answer_texts[i],
-                    is_correct=is_corrects[i].lower() == 'true'
+                    is_correct=is_corrects[i]
                 )
+
             return redirect('question_list')
     else:
         question_form = QuestionForm()

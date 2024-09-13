@@ -9,15 +9,15 @@
 
         <!-- Question Form -->
         <div class="form-group">
-            <label for="subject">Subject</label>
+            {% comment %} <label for="subject">Subject</label> {% endcomment %}
             {{ question_form.subject|as_crispy_field }}
         </div>
         <div class="form-group">
-            <label for="category">Category</label>
+            {% comment %} <label for="category">Category</label> {% endcomment %}
             {{ question_form.category|as_crispy_field }}
         </div>
         <div class="form-group">
-            <label for="question_text">Question</label>
+            {% comment %} <label for="question_text">Question</label> {% endcomment %}
             {{ question_form.question_text|as_crispy_field }}
         </div>
 
@@ -28,7 +28,7 @@
                 <label for="answer_text">Answer</label>
                 <input type="text" name="answer_text[]" class="form-control" placeholder="Enter answer text" required>
                 <label for="is_correct">Correct</label>
-                <input type="checkbox" name="is_correct[]" value="True" class="form-check-input">
+                <input type="checkbox" name="is_correct[]" value="1" class="form-check-input">
             </div>
         </div>
         <button type="button" class="btn btn-secondary add-answer">Add Answer</button>
@@ -39,15 +39,17 @@
 </div>
 
 <script>
+    var answer_num = 0;
+
     document.querySelector('.add-answer').addEventListener('click', function() {
         var formset = document.getElementById('answers-formset');
-        
+        answer_num += 1;
         var newAnswerGroup = `
             <div class="answer-group form-group">
                 <label for="answer_text">Answer</label>
                 <input type="text" name="answer_text[]" class="form-control" placeholder="Enter answer text" required>
                 <label for="is_correct">Correct</label>
-                <input type="checkbox" name="is_correct[]" value="True" class="form-check-input">
+                <input type="checkbox" name="is_correct[]" value='${answer_num}' class="form-check-input">
             </div>
         `;
         
