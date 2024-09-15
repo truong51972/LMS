@@ -2,19 +2,30 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question, Answer
 from .forms import QuestionForm, AnswerForm
 from module_group.models import ModuleGroup
-
+from django.utils import timezone
 # Question views
 def question_list(request):
     module_groups = ModuleGroup.objects.all()
+    
     questions = Question.objects.all()
-    answer = Answer.objects.all()
+    
+    questions_and_correct_answers = {}
 
-    # print(module_groups)
-    # print(questions)
-    # print(questions[0].category)
-    # print(questions[0].subject)
-    # print(answer)
-    return render(request, 'question_list.html', {'questions': questions, 'module_groups':module_groups})
+    for question in questions:
+        correct_answers = Answer.objects.filter(question_id = question.id, is_correct= True)
+        
+        questions_and_correct_answers[question.id] = {
+            'question' : question,
+            'correct_answers' : correct_answers
+        }
+
+    context = {
+        'questions': questions,
+        'module_groups': module_groups,
+        'correct_answers': None,
+        'questions_and_correct_answers': questions_and_correct_answers,
+    }
+    return render(request, 'question_list.html', context)
 
 def question_detail(request, pk):
     question = get_object_or_404(Question, pk=pk)

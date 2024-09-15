@@ -1,11 +1,13 @@
 from django.db import models
 from category.models import Category
 from subject.models import Subject
+from django.utils import timezone
 
 class Question(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.question_text

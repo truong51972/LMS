@@ -40,7 +40,7 @@
                 <td>
                     <a href="{% url 'question:question_detail' question.pk %}" class="btn btn-info">View</a>
                     <a href="{% url 'question:question_edit' question.pk %}" class="btn btn-warning">Edit</a>
-                    {% comment %} <a href="{% url 'question:answer_add' question.pk %}" class="btn btn-primary">Add Answer</a> {% endcomment %}
+                    <a href="{% url 'question:answer_add' question.pk %}" class="btn btn-primary">Add Answer</a>
                     <form action="{% url 'question:question_delete' question.pk %}" method="post"
                         style="display:inline;">
                         {% csrf_token %}
