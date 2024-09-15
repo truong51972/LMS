@@ -18,34 +18,48 @@
             </tr>
         </thead>
         <tbody>
-            {% for question in questions %}
+            {% for id, question_and_correct_answer in questions_and_correct_answers.items %}
             <tr>
-                <td>{{ question.question_text }}</td>
-                <td>{{ question.correct_answer }}</td>
+                <td>{{ question_and_correct_answer.question.question_text }}</td>
+                {% comment %} <td>nah</td> {% endcomment %}
                 <td>
-                    {% if question.subject %}
-                        {{ question.subject }}
+                    {% if question_and_correct_answer.correct_answers %}
+                            {% for correct_answer in question_and_correct_answer.correct_answers%}
+                                <p>- {{ correct_answer }}</p> 
+                            {% endfor%}
+                        {% else %}
+                        <div class="alert alert-danger" role="alert">
+                            None!
+                        </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if question_and_correct_answer.question.subject %}
+                        {{ question_and_correct_answer.question.subject }}
                     {% else %}
                         No Subject
                     {% endif %}
                 </td>
                 <td>
-                    {% if question.category %}
-                        {{ question.category }}
+                    {% if question_and_correct_answer.question.category %}
+                        {{ question_and_correct_answer.question.category }}
                     {% else %}
                         No Category
                     {% endif %}
                 </td>
-                <td>{{ question.created_at }}</td>
+                <td>{{ question_and_correct_answer.question.created_at }}</td>
                 <td>
-                    <a href="{% url 'question:question_detail' question.pk %}" class="btn btn-info">View</a>
-                    <a href="{% url 'question:question_edit' question.pk %}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'question:answer_add' question.pk %}" class="btn btn-primary">Add Answer</a>
-                    <form action="{% url 'question:question_delete' question.pk %}" method="post"
-                        style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                          Actions
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{% url 'question:question_detail' question_and_correct_answer.question.pk %}" class="dropdown-item">View</a>
+                            <a href="{% url 'question:question_edit' question_and_correct_answer.question.pk %}" class="btn btn-warning dropdown-item">Edit</a>
+                            <a href="{% url 'question:answer_add' question_and_correct_answer.question.pk %}" class="btn btn-primary dropdown-item">Add Answer</a>
+                            <a href="{% url 'question:question_delete' question_and_correct_answer.question.pk %}" class="btn btn-primary dropdown-item">Delete</a>
+                        </div>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

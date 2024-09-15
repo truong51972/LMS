@@ -19,6 +19,7 @@ def question_list(request):
             'correct_answers' : correct_answers
         }
 
+    print(questions_and_correct_answers)
     context = {
         'questions': questions,
         'module_groups': module_groups,
@@ -71,5 +72,10 @@ def question_delete(request, pk):
     question = get_object_or_404(Question, pk=pk)
     if request.method == 'POST':
         question.delete()
-        return redirect('question_list')
-    return render(request, 'question_confirm_delete.html', {'question': question})
+        return redirect('question:question_list')
+    
+    context = {
+        'name': question.question_text,
+        'cancel_link': 'question:question_list'
+    }
+    return render(request, 'confirm_delete.html', context)
