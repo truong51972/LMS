@@ -146,6 +146,16 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'truong51972$LMS_database',
+#         'USER': 'truong51972',
+#         'PASSWORD': 'Anhyeuem51972@',
+#         'HOST': 'truong51972.mysql.pythonanywhere-services.com',
+#         'PORT': '3306',
+#     }
+# }
 
 # //Driver={ODBC Driver 18 for SQL Server};Server=tcp:hcmuafserver.database.windows.net,1433;Database=hcmuafdb;Uid=ngattt;Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;
 
