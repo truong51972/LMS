@@ -6,7 +6,36 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Welcome to the Home Page</h1>
+    {% if is_login %}
+        <h1>Hi "{{ user_name }}!"</h1>
+    {% else %}
+        <h1>Login required!</h1>
+        There are some account you can choose to login!
+        <ul>
+            <li>
+                Admin
+                <ul>
+                    <li>User name: admin</li>
+                    <li>Password: admin</li>
+                </ul>
+            </li>
+            <li>
+                Instructor
+                <ul>
+                    <li>User name: instructor</li>
+                    <li>Password: 123</li>
+                </ul>
+            </li>
+            <li>
+                Student
+                <ul>
+                    <li>User name: student</li>
+                    <li>Password: 123</li>
+                </ul>
+            </li>
+        </ul>        
+    {% endif %}
     <!-- Home page content -->
+
 </div>
 {% endblock %}

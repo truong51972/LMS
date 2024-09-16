@@ -2,12 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Subject
 from .forms import SubjectForm
 from module_group.models import ModuleGroup
+from django.contrib.auth.decorators import login_required
 
 # Subject views
 # def subject_list(request):
 #     subjects = Subject.objects.all()
 #     return render(request, 'subject_list.html', {'subjects': subjects})
 
+@login_required
 def subject_list(request):
     module_groups = ModuleGroup.objects.all()
    # modules = Module.objects.all()
@@ -19,6 +21,7 @@ def subject_list(request):
     })
 
 
+@login_required
 def subject_add(request):
     if request.method == 'POST':
         form = SubjectForm(request.POST)
@@ -29,6 +32,7 @@ def subject_add(request):
         form = SubjectForm()
     return render(request, 'subject_form.html', {'form': form})
 
+@login_required
 def subject_edit(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == 'POST':
@@ -40,6 +44,7 @@ def subject_edit(request, pk):
         form = SubjectForm(instance=subject)
     return render(request, 'subject_form.html', {'form': form})
 
+@login_required
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == 'POST':

@@ -2,8 +2,10 @@ from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import TrainingProgram, Subject, TrainingProgramSubjects
 from .forms import TrainingProgramSubjectsForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def manage_subjects(request, program_id):
     program = get_object_or_404(TrainingProgram, pk=program_id)
     if request.method == 'POST':

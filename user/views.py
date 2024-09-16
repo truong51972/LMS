@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import User, Role
 from .forms import UserForm, RoleForm
 from module_group.models import Module, ModuleGroup
+from django.contrib.auth.decorators import login_required
 
 # User views
+@login_required
 def user_list(request):
     users = User.objects.all()
     module_groups = ModuleGroup.objects.all()
@@ -16,10 +18,12 @@ def user_list(request):
     }
     return render(request, 'user_list.html', context)
 
+@login_required
 def user_detail(request, pk):
     user = get_object_or_404(User, pk=pk)
     return render(request, 'user_detail.html', {'user': user})
 
+@login_required
 def user_add(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -30,6 +34,7 @@ def user_add(request):
         form = UserForm()
     return render(request, 'user_form.html', {'form': form})
 
+@login_required
 def user_edit(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -42,6 +47,7 @@ def user_edit(request, pk):
     return render(request, 'user_form.html', {'form': form})
 
 
+@login_required
 def user_delete(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':

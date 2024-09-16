@@ -2,9 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Role
 from .forms import RoleForm
 from module_group.models import Module, ModuleGroup
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 # Role views
+@login_required
 def role_list(request):
     roles = Role.objects.all()
     module_groups = ModuleGroup.objects.all()
@@ -16,6 +18,7 @@ def role_list(request):
     }
     return render(request, 'role_list.html', context)
 
+@login_required
 def role_add(request):
     if request.method == 'POST':
         form = RoleForm(request.POST)
@@ -26,6 +29,7 @@ def role_add(request):
         form = RoleForm()
     return render(request, 'role_form.html', {'form': form})
 
+@login_required
 def role_edit(request, pk):
     role = get_object_or_404(Role, pk=pk)
     if request.method == 'POST':
@@ -37,6 +41,7 @@ def role_edit(request, pk):
         form = RoleForm(instance=role)
     return render(request, 'role_form.html', {'form': form})
 
+@login_required
 def role_delete(request, pk):
     role = get_object_or_404(Role, pk=pk)
     if request.method == 'POST':

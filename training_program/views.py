@@ -4,11 +4,14 @@ from training_program_subjects.models import TrainingProgramSubjects
 from .forms import TrainingProgramForm 
 from training_program_subjects.forms import TrainingProgramSubjectsForm 
 from module_group.models import ModuleGroup
+from django.contrib.auth.decorators import login_required
+
 # Home view
 def home(request):
     return render(request, 'home.html')
 
 # Manage subjects in a training program
+@login_required
 def manage_subjects(request, program_id):
     program = get_object_or_404(TrainingProgram, pk=program_id)
     if request.method == 'POST':
@@ -25,6 +28,7 @@ def manage_subjects(request, program_id):
     return render(request, 'manage_subjects.html', {'form': form, 'program': program})
 
 # TrainingProgram views
+@login_required
 def training_program_list(request):
     module_groups = ModuleGroup.objects.all()
     programs = TrainingProgram.objects.all()
@@ -33,6 +37,7 @@ def training_program_list(request):
         'module_groups': module_groups,
         })
 
+@login_required
 def training_program_add(request):
     if request.method == 'POST':
         form = TrainingProgramForm(request.POST)
@@ -43,6 +48,7 @@ def training_program_add(request):
         form = TrainingProgramForm()
     return render(request, 'training_program_form.html', {'form': form})
 
+@login_required
 def training_program_edit(request, pk):
     program = get_object_or_404(TrainingProgram, pk=pk)
     if request.method == 'POST':
@@ -54,6 +60,7 @@ def training_program_edit(request, pk):
         form = TrainingProgramForm(instance=program)
     return render(request, 'training_program_form.html', {'form': form})
 
+@login_required
 def training_program_delete(request, pk):
     program = get_object_or_404(TrainingProgram, pk=pk)
     if request.method == 'POST':
