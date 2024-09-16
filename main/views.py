@@ -1,8 +1,14 @@
 from django.shortcuts import render
-from module_group.models import ModuleGroup, Module
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+
+from module_group.models import ModuleGroup, Module
+
+from .setup_func.create_default_accounts import create_default_accounts
+from .setup_func.create_default_roles import create_default_roles
+from .setup_func.create_default_module_group import create_default_module_group
+from .setup_func.create_default_modules import create_default_modules
 
 def home(request):
     module_groups = ModuleGroup.objects.all()
@@ -31,4 +37,13 @@ def base_view(request):
 
 def logout_view(request):
     logout(request)
+    return redirect('/')
+
+def run_setup(request):
+
+    create_default_module_group()
+    create_default_modules()
+    create_default_roles()
+    create_default_accounts()
+
     return redirect('/')
