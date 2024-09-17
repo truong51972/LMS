@@ -22,7 +22,7 @@ def question_list(request):
             'correct_answers' : correct_answers
         }
 
-    print(questions_and_correct_answers)
+    # print(questions_and_correct_answers)
     context = {
         'questions': questions,
         'module_groups': module_groups,

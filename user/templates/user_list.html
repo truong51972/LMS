@@ -23,9 +23,17 @@
                 <td>{{ user.full_name }}</td>
                 <td>{{ user.role }}</td>
                 <td>
-                    <a href="{% url 'user:user_detail' user.pk %}" class="btn btn-info btn-sm">Details</a>
-                    <a href="{% url 'user:user_edit' user.pk %}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="{% url 'user:user_delete' user.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                          ...
+                        </a>
+                      
+                        <div class="dropdown-menu">
+                          <a href="{% url 'user:user_detail' user.pk %}" class="dropdown-item">Details</a>
+                          <a href="{% url 'user:user_edit' user.pk %}" class="dropdown-item">Edit</a>
+                          <a href="{% url 'user:user_delete' user.pk %}" class="dropdown-item">Delete</a>
+                        </div>
+                      </div>
                 </td>
             </tr>
             {% endfor %}

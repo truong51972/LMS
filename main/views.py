@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 
 from module_group.models import ModuleGroup, Module
 
-from .setup_func.create_default_accounts import create_default_accounts
-from .setup_func.create_default_roles import create_default_roles
-from .setup_func.create_default_module_group import create_default_module_group
-from .setup_func.create_default_modules import create_default_modules
+from .utils.create_default_accounts import create_default_accounts
+from .utils.create_default_roles import create_default_roles
+from .utils.create_default_module_group import create_default_module_group
+from .utils.create_default_modules import create_default_modules
 
 def home(request):
     module_groups = ModuleGroup.objects.all()
@@ -17,10 +17,11 @@ def home(request):
     context = {}
 
     if request.user.is_authenticated:
-        context['user_name'] = request.user.username
         context['is_login'] = True
-        context['module_groups'] = module_groups
-        context['modules'] = modules
+        context['user_name'] = request.user.username
+        if request.user.role.role_name in ['Admin', 'Instructor']:
+            context['module_groups'] = module_groups
+            context['modules'] = modules
     else:
         context['is_login'] = False
 

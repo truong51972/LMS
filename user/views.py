@@ -4,10 +4,13 @@ from .forms import UserForm, RoleForm
 from module_group.models import Module, ModuleGroup
 from django.contrib.auth.decorators import login_required
 
-# User views
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
 @login_required
+@user_passes_test(block_student)
 def user_list(request):
-    users = User.objects.all()
+    users = User.objects.all().order_by('role')
     module_groups = ModuleGroup.objects.all()
     modules = Module.objects.all()
 
@@ -19,22 +22,25 @@ def user_list(request):
     return render(request, 'user_list.html', context)
 
 @login_required
+@user_passes_test(block_student)
 def user_detail(request, pk):
     user = get_object_or_404(User, pk=pk)
     return render(request, 'user_detail.html', {'user': user})
 
 @login_required
+@user_passes_test(block_student)
 def user_add(request):
     if request.method == 'POST':
-        form = UserForm(request.POST)
+        form = UserForm(request.POST, user_role = request.user.role.role_name)
         if form.is_valid():
             form.save()
             return redirect('user:user_list')
     else:
-        form = UserForm()
+        form = UserForm(user_role = request.user.role.role_name)
     return render(request, 'user_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def user_edit(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -48,6 +54,7 @@ def user_edit(request, pk):
 
 
 @login_required
+@user_passes_test(block_student)
 def user_delete(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
