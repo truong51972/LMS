@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Course List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Course List</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Created At</th>
+                <th>Modified At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.description }}</td>
+                <td>
+                    {{ course.image.url }}
+                    <img src="{{ course.image.url }}" alt="img" style="max-height:300px;">
+                </td>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.description }}</td>
+                <td>
+                    <a class="btn btn-warning btn-sm">Edit</a>
+                    {% comment %} <a href="{% url 'subject:subject_edit' subject.pk %}" class="btn btn-warning btn-sm">Edit</a> {% endcomment %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'course:course_add' %}" class="btn btn-primary">Add New Course</a>
+</div>
+{% endblock %}

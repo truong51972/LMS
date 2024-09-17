@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'question',
     # 'quiz',
     'user_module',
+    'course',
 ]
 
 
@@ -91,50 +92,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fsa_lms',
-#         'USER': 'postgres',
-#         'PASSWORD': '1234567890',
-#         'HOST': 'localhost',  # Set to the appropriate host if using a remote server
-#         'PORT': '5432',       # Default PostgreSQL port
-#     }
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'fsa_lms',
-#         'USER': 'ngattt@hcmuafserver',
-#         'PASSWORD': 'fsa@123456',
-#         'HOST': 'hcmuafserver.database.windows.net',  # Set to the appropriate host if using a remote server
-#         'PORT': '1433',       # Default PostgreSQL port
-#     }
-# }
-
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'hcmuafdb',
-#         'USER': 'ngattt',
-#         'PASSWORD': 'fsa@123456',
-#         'HOST': 'hcmuafserver.database.windows.net',
-#         'PORT': '1433',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 18 for SQL Server',
-#             'encrypt': True,
-#             'trustServerCertificate': False,
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -156,29 +113,6 @@ DATABASES = {
 #         'PORT': '3306',
 #     }
 # }
-
-# //Driver={ODBC Driver 18 for SQL Server};Server=tcp:hcmuafserver.database.windows.net,1433;Database=hcmuafdb;Uid=ngattt;Pwd={your_password_here};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;
-
-# jdbc:sqlserver://hcmuafserver.database.windows.net:1433;database=hcmuafdb;
-# user=ngattt@hcmuafserver;password={your_password_here};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'FSA_indicateof',
-#         'USER': 'FSA_indicateof',
-#         'PASSWORD': '52eea5fe24803adf007d0b49ee538e3ee866a2e6',
-#         'HOST': 'd0e.h.filess.io',
-#         'PORT': '5433',
-#         'OPTIONS': {
-#             'options': '-c search_path=FSA_indicateof'  
-#         }
-#     }
-# }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -225,3 +159,6 @@ AUTH_USER_MODEL = 'user.User'
 #     'user.authentication_backends.StaffOnlyBackend',
 #     'django.contrib.auth.backends.ModelBackend',  # Đảm bảo backend mặc định vẫn được sử dụng
 # ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

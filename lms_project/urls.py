@@ -37,6 +37,6 @@ urlpatterns = [
     path('user/', include('user.urls')),  
     path('user_module/', include('user_module.urls')),  
     
-         
+    path('course/', include('course.urls')),  
     # Add more paths for other new apps here
 ]
