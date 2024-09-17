@@ -92,27 +92,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'LMS_database',
-        'USER': 'truong51972',
-        'PASSWORD': '51972',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'truong51972$LMS_database',
+#         'NAME': 'LMS_database',
 #         'USER': 'truong51972',
-#         'PASSWORD': 'Anhyeuem51972@',
-#         'HOST': 'truong51972.mysql.pythonanywhere-services.com',
+#         'PASSWORD': '51972',
+#         'HOST': 'localhost',
 #         'PORT': '3306',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'truong51972$LMS_database',
+        'USER': 'truong51972',
+        'PASSWORD': 'Anhyeuem51972@',
+        'HOST': 'truong51972.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
