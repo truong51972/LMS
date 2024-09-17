@@ -146,7 +146,6 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -160,5 +159,12 @@ AUTH_USER_MODEL = 'user.User'
 #     'django.contrib.auth.backends.ModelBackend',  # Đảm bảo backend mặc định vẫn được sử dụng
 # ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL   = 'static/'
+# STATIC_ROOT  = BASE_DIR / 'static'
+
+# MEDIA_URL    = '/media/'
+MEDIA_ROOT   = BASE_DIR / 'media'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
