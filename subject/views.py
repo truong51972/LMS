@@ -4,12 +4,17 @@ from .forms import SubjectForm
 from module_group.models import ModuleGroup
 from django.contrib.auth.decorators import login_required
 
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
+
 # Subject views
 # def subject_list(request):
 #     subjects = Subject.objects.all()
 #     return render(request, 'subject_list.html', {'subjects': subjects})
 
 @login_required
+@user_passes_test(block_student)
 def subject_list(request):
     module_groups = ModuleGroup.objects.all()
    # modules = Module.objects.all()
@@ -22,6 +27,7 @@ def subject_list(request):
 
 
 @login_required
+@user_passes_test(block_student)
 def subject_add(request):
     if request.method == 'POST':
         form = SubjectForm(request.POST)
@@ -33,6 +39,7 @@ def subject_add(request):
     return render(request, 'subject_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def subject_edit(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == 'POST':
@@ -45,6 +52,7 @@ def subject_edit(request, pk):
     return render(request, 'subject_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == 'POST':

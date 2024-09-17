@@ -4,8 +4,13 @@ from .models import TrainingProgram, Subject, TrainingProgramSubjects
 from .forms import TrainingProgramSubjectsForm
 from django.contrib.auth.decorators import login_required
 
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
+
 # Create your views here.
 @login_required
+@user_passes_test(block_student)
 def manage_subjects(request, program_id):
     program = get_object_or_404(TrainingProgram, pk=program_id)
     if request.method == 'POST':

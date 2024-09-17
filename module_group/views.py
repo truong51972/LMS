@@ -4,18 +4,25 @@ from .models import Module, ModuleGroup
 from .forms import ModuleForm, ModuleGroupForm
 from django.contrib.auth.decorators import login_required
 
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
+
 # ModuleGroup views
 @login_required
+@user_passes_test(block_student)
 def module_group_list(request):
     module_groups = ModuleGroup.objects.all()
     return render(request, 'module_group_list.html', {'module_groups': module_groups})
 
 @login_required
+@user_passes_test(block_student)
 def module_group_detail(request, pk):
     module_group = get_object_or_404(ModuleGroup, pk=pk)
     return render(request, 'module_group_detail.html', {'module_group': module_group})
 
 @login_required
+@user_passes_test(block_student)
 def module_group_add(request):
     if request.method == 'POST':
         form = ModuleGroupForm(request.POST)
@@ -31,6 +38,7 @@ def module_group_add(request):
 
 
 @login_required
+@user_passes_test(block_student)
 def module_group_edit(request, pk):
     module_group = get_object_or_404(ModuleGroup, pk=pk)
     if request.method == 'POST':
@@ -43,6 +51,7 @@ def module_group_edit(request, pk):
     return render(request, 'module_group_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def module_group_delete(request, pk):
     module_group = get_object_or_404(ModuleGroup, pk=pk)
     if request.method == 'POST':
@@ -56,17 +65,20 @@ def module_group_delete(request, pk):
 
 # MODULE
 @login_required
+@user_passes_test(block_student)
 def module_list(request):
     module_groups = ModuleGroup.objects.all()
     modules = Module.objects.all()
     return render(request, 'module_list.html', {'module_groups': module_groups,'modules': modules})
 
 @login_required
+@user_passes_test(block_student)
 def module_detail(request, pk):
     module = get_object_or_404(Module, pk=pk)
     return render(request, 'module_detail.html', {'module': module})
 
 @login_required
+@user_passes_test(block_student)
 def module_add(request):
     if request.method == 'POST':
         form = ModuleForm(request.POST)
@@ -78,6 +90,7 @@ def module_add(request):
     return render(request, 'module_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def module_edit(request, pk):
     module = get_object_or_404(Module, pk=pk)
     if request.method == 'POST':
@@ -90,6 +103,7 @@ def module_edit(request, pk):
     return render(request, 'module_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def module_delete(request, pk):
     module = get_object_or_404(Module, pk=pk)
     if request.method == 'POST':

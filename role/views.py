@@ -4,9 +4,14 @@ from .forms import RoleForm
 from module_group.models import Module, ModuleGroup
 from django.contrib.auth.decorators import login_required
 
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
+
 # Create your views here.
 # Role views
 @login_required
+@user_passes_test(block_student)
 def role_list(request):
     roles = Role.objects.all()
     module_groups = ModuleGroup.objects.all()
@@ -19,6 +24,7 @@ def role_list(request):
     return render(request, 'role_list.html', context)
 
 @login_required
+@user_passes_test(block_student)
 def role_add(request):
     if request.method == 'POST':
         form = RoleForm(request.POST)
@@ -30,6 +36,7 @@ def role_add(request):
     return render(request, 'role_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def role_edit(request, pk):
     role = get_object_or_404(Role, pk=pk)
     if request.method == 'POST':
@@ -42,6 +49,7 @@ def role_edit(request, pk):
     return render(request, 'role_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def role_delete(request, pk):
     role = get_object_or_404(Role, pk=pk)
     if request.method == 'POST':

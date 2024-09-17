@@ -5,8 +5,12 @@ from module_group.models import ModuleGroup
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 # Question views
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
+
 
 @login_required
+@user_passes_test(block_student)
 def question_list(request):
     module_groups = ModuleGroup.objects.all()
     
@@ -32,11 +36,13 @@ def question_list(request):
     return render(request, 'question_list.html', context)
 
 @login_required
+@user_passes_test(block_student)
 def question_detail(request, pk):
     question = get_object_or_404(Question, pk=pk)
     return render(request, 'question_detail.html', {'question': question})
 
 @login_required
+@user_passes_test(block_student)
 def question_add(request):
     if request.method == 'POST':
         question_form = QuestionForm(request.POST)
@@ -63,6 +69,7 @@ def question_add(request):
     return render(request, 'question_add.html', {'question_form': question_form})
 
 @login_required
+@user_passes_test(block_student)
 def question_edit(request, pk):
     question = get_object_or_404(Question, pk=pk)
     if request.method == 'POST':
@@ -75,6 +82,7 @@ def question_edit(request, pk):
     return render(request, 'question_form.html', {'form': form})
 
 @login_required
+@user_passes_test(block_student)
 def question_delete(request, pk):
     question = get_object_or_404(Question, pk=pk)
     if request.method == 'POST':
