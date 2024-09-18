@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%9tkr6=2x0koih$(9^sggb-z)ub@g$37t*57u7eymim46k+9)w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['*']
@@ -92,27 +93,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'LMS_database',
-#         'USER': 'truong51972',
-#         'PASSWORD': '51972',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'truong51972$LMS_database',
-        'USER': 'truong51972',
-        'PASSWORD': 'Anhyeuem51972@',
-        'HOST': 'truong51972.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
+if os.getlogin() == 'tranq':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'LMS_database',
+            'USER': 'truong51972',
+            'PASSWORD': '51972',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
     }
-}
+else: 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'truong51972$LMS_database',
+            'USER': 'truong51972',
+            'PASSWORD': 'Anhyeuem51972@',
+            'HOST': 'truong51972.mysql.pythonanywhere-services.com',
+            'PORT': '3306',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -159,12 +161,15 @@ AUTH_USER_MODEL = 'user.User'
 #     'django.contrib.auth.backends.ModelBackend',  # Đảm bảo backend mặc định vẫn được sử dụng
 # ]
 
-STATIC_URL   = 'static/'
-# STATIC_ROOT  = BASE_DIR / 'static'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# MEDIA_URL    = '/media/'
-MEDIA_ROOT   = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

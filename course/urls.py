@@ -9,6 +9,8 @@ app_name = 'course'
 urlpatterns = [
     path('', views.course_list, name='course_list'),
     path('create/', views.course_add, name='course_add'),
+    path('course/delete/<int:pk>/', views.course_delete, name='course_delete'),
+
 ]
 
 # if settings.DEBUG:

@@ -42,4 +42,4 @@ urlpatterns = [
     
     path('course/', include('course.urls')),  
     # Add more paths for other new apps here
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

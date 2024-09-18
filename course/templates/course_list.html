@@ -21,13 +21,22 @@
                 <td>{{ course.course_name }}</td>
                 <td>{{ course.description }}</td>
                 <td>
-                    <img src="{{ course.image.url }}">
+                    <img src="{{ course.image.url }}" style="max-width: 18rem">
                 </td>
-                <td>{{ course.course_name }}</td>
-                <td>{{ course.description }}</td>
+                <td>{{ course.created_at }}</td>
+                <td>{{ course.modified_at }}</td>
                 <td>
-                    <a class="btn btn-warning btn-sm">Edit</a>
-                    {% comment %} <a href="{% url 'subject:subject_edit' subject.pk %}" class="btn btn-warning btn-sm">Edit</a> {% endcomment %}
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                          ...
+                        </a>
+                      
+                        <div class="dropdown-menu">
+                          <a href="{% url 'user:user_detail' user.pk %}" class="dropdown-item">Details</a>
+                          <a href="{% url 'user:user_edit' user.pk %}" class="dropdown-item">Edit</a>
+                          <a href="{% url 'course:course_delete' course.pk %}" class="dropdown-item">Delete</a>
+                        </div>
+                      </div>
                 </td>
             </tr>
             {% endfor %}

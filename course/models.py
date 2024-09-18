@@ -1,15 +1,35 @@
 from django.db import models
+from django.core.cache import cache
+from django.utils.timezone import now
 
 from user.models import User
 
+import os
 
-# Create your models here.
+
 class Course(models.Model):
     course_name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now_add=True)
+
+    def delete(self, *args, **kwargs):
+        try:
+            self.image.delete()
+        except PermissionError:
+            print('Error!')
+            # cache.set('not_deleted_img', self.image.path, timeout=300)
+
+        super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            _, ext = os.path.splitext(self.image.name)
+            new_filename = f"{now().strftime('%Y_%m_%d_%H_%M_%S')}{ext}"
+            self.image.name = new_filename
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.course_name
