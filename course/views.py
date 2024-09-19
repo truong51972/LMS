@@ -1,3 +1,6 @@
+import os
+import cv2
+
 from django.shortcuts import render, redirect, get_object_or_404
 
 from module_group.models import ModuleGroup
@@ -5,11 +8,12 @@ from module_group.models import ModuleGroup
 from .forms import CourseForm
 from .models import Course
 
-import os
+from main.utils.block import block_student
+from django.contrib.auth.decorators import user_passes_test
 
-import cv2
 
-# Create your views here.
+@login_required
+@user_passes_test(block_student)
 def course_list(request):
     context = {}
 
@@ -21,12 +25,16 @@ def course_list(request):
     return render(request, 'course_list.html', context)
 
 
+@login_required
+@user_passes_test(block_student)
 def compress_image(image_path):
     img = cv2.imread(image_path)
     img = cv2.resize(img, (400, 300), interpolation=cv2.INTER_AREA)
     cv2.imwrite(image_path, img)
 
 
+@login_required
+@user_passes_test(block_student)
 def course_add(request):
     if request.method == 'POST':
         form = CourseForm(request.POST, request.FILES)
@@ -39,6 +47,8 @@ def course_add(request):
     return render(request, 'course_form.html', {'form': form})
 
 
+@login_required
+@user_passes_test(block_student)
 def course_delete(request, pk):
     course = get_object_or_404(Course, pk=pk)
     if request.method == 'POST':
@@ -52,6 +62,8 @@ def course_delete(request, pk):
     return render(request, 'confirm_delete.html', context)
 
 
+@login_required
+@user_passes_test(block_student)
 def course_edit(request, pk):
     course = get_object_or_404(Course, pk=pk)
     old_img_path = course.image.path
