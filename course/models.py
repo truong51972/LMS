@@ -4,6 +4,8 @@ from django.utils.timezone import now
 
 from user.models import User
 
+from unidecode import unidecode
+
 import os
 
 
@@ -12,21 +14,20 @@ class Course(models.Model):
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='images/')
     created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
     def delete(self, *args, **kwargs):
         try:
             self.image.delete()
         except PermissionError:
             print('Error!')
-            # cache.set('not_deleted_img', self.image.path, timeout=300)
 
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         if self.image:
-            _, ext = os.path.splitext(self.image.name)
-            new_filename = f"{now().strftime('%Y_%m_%d_%H_%M_%S')}{ext}"
+            name, ext = os.path.splitext(self.image.name)
+            new_filename = f"{unidecode(name)}{ext}"
             self.image.name = new_filename
 
         super().save(*args, **kwargs)

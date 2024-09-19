@@ -32,8 +32,7 @@
                         </a>
                       
                         <div class="dropdown-menu">
-                          <a href="{% url 'user:user_detail' user.pk %}" class="dropdown-item">Details</a>
-                          <a href="{% url 'user:user_edit' user.pk %}" class="dropdown-item">Edit</a>
+                          <a href="{% url 'course:course_edit' course.pk %}" class="dropdown-item">Edit</a>
                           <a href="{% url 'course:course_delete' course.pk %}" class="dropdown-item">Delete</a>
                         </div>
                       </div>

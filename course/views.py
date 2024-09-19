@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
 from module_group.models import ModuleGroup
+
 from .forms import CourseForm
 from .models import Course
+
 import os
+
 import cv2
 
 # Create your views here.
@@ -27,8 +31,8 @@ def course_add(request):
     if request.method == 'POST':
         form = CourseForm(request.POST, request.FILES)
         if form.is_valid():
-            img = form.save()
-            compress_image(img.image.path)
+            course_info = form.save()
+            compress_image(course_info.image.path)
             return redirect('course:course_list')
     else:
         form = CourseForm()
@@ -46,3 +50,25 @@ def course_delete(request, pk):
         'cancel_link': 'course:course_list'
     }
     return render(request, 'confirm_delete.html', context)
+
+
+def course_edit(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    old_img_path = course.image.path
+
+    if request.method == 'POST':
+        form = CourseForm(request.POST, request.FILES, instance=course)
+        if form.is_valid():
+
+            course_info = form.save()
+            compress_image(course_info.image.path)
+            
+            new_img_path = course.image.path
+
+            if old_img_path != new_img_path:
+                os.remove(old_img_path)
+
+            return redirect('course:course_list')
+    else:
+        form = CourseForm(instance=course)
+    return render(request, 'course_form.html', {'form': form})

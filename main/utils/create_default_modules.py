@@ -50,6 +50,12 @@ def create_default_modules():
             "icon" : "fas fa-user-tag",
             "module_group_id" : "Assessment Management",
         },
+
+        "Course" : {
+            "module_url" : "course:course_list",
+            "icon" : "fa-brands fa-leanpub",
+            "module_group_id" : "Assessment Management",
+        }
     }
 
     print("Create module!")
