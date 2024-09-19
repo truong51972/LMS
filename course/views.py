@@ -8,8 +8,15 @@ from module_group.models import ModuleGroup
 from .forms import CourseForm
 from .models import Course
 
+from django.contrib.auth.decorators import login_required
 from main.utils.block import block_student
 from django.contrib.auth.decorators import user_passes_test
+
+
+def compress_image(image_path):
+    img = cv2.imread(image_path)
+    img = cv2.resize(img, (400, 300), interpolation=cv2.INTER_AREA)
+    cv2.imwrite(image_path, img)
 
 
 @login_required
@@ -23,14 +30,6 @@ def course_list(request):
     context['module_groups'] = module_groups
     context['courses'] = courses
     return render(request, 'course_list.html', context)
-
-
-@login_required
-@user_passes_test(block_student)
-def compress_image(image_path):
-    img = cv2.imread(image_path)
-    img = cv2.resize(img, (400, 300), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(image_path, img)
 
 
 @login_required
