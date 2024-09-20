@@ -15,7 +15,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to='images/')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
+    
     def delete(self, *args, **kwargs):
         try:
             self.image.delete()

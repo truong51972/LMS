@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
 from module_group.models import ModuleGroup, Module
+from course.models import Course
 
 from .utils.create_default_accounts import create_default_accounts
 from .utils.create_default_roles import create_default_roles
@@ -11,21 +12,26 @@ from .utils.create_default_module_group import create_default_module_group
 from .utils.create_default_modules import create_default_modules
 
 def home(request):
-    module_groups = ModuleGroup.objects.all()
-    modules = Module.objects.all()
+    if not request.user.is_authenticated:
+        return render(request, 'home_not_logged.html')
 
     context = {}
+    
+    context['user_name'] = request.user.username
 
-    if request.user.is_authenticated:
-        context['is_login'] = True
-        context['user_name'] = request.user.username
-        if request.user.role.role_name in ['Admin', 'Instructor']:
-            context['module_groups'] = module_groups
-            context['modules'] = modules
+    role_name = request.user.role.role_name
+    if role_name in ['Admin', 'Instructor']:
+        context['module_groups'] = ModuleGroup.objects.all()
+        context['modules'] = Module.objects.all()
+
+        return render(request, 'home.html', context)
+
     else:
-        context['is_login'] = False
+        context['courses'] = Course.objects.all()
+        print(context)
+        return render(request, 'home_student.html', context)
 
-    return render(request, 'home.html', context)
+    
 
 
 def base_view(request):

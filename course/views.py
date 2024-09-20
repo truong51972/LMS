@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import user_passes_test
 
 def compress_image(image_path):
     img = cv2.imread(image_path)
-    img = cv2.resize(img, (400, 300), interpolation=cv2.INTER_AREA)
+    img = cv2.resize(img, (400, 225), interpolation=cv2.INTER_AREA)
     cv2.imwrite(image_path, img)
 
 
