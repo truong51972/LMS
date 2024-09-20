@@ -7,8 +7,13 @@ urlpatterns = [
     path('add/', views.subject_add, name='subject_add'),
     path('subjects/edit/<int:pk>/', views.subject_edit, name='subject_edit'),
     path('subjects/delete/<int:pk>/', views.subject_delete, name='subject_delete'),
-]
+    path('upload/', views.upload_material, name='upload_material'),
+    
+    path('materials/<int:subject_id>/', views.subject_materials, name='subject_materials'),
+    path('upload/', views.upload_material, name='upload_material'),  # Ensure this is included
+    path('delete_material/<int:pk>/', views.delete_material, name='delete_material'),
 
+]
 
 # urlpatterns = [
 #     # Module Group URLs
