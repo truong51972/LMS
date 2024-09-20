@@ -55,7 +55,25 @@ def create_default_modules():
             "module_url" : "course:course_list",
             "icon" : "fa-brands fa-leanpub",
             "module_group_id" : "Assessment Management",
-        }
+        },
+
+        "Generate Exams" : {
+            "module_url" : "tools:exam_generator_view",
+            "icon" : "fas fa-user-tag",
+            "module_group_id" : "Tools",
+        },
+
+        "Excel to JSON" : {
+            "module_url" : "tools:export_excel_to_json",
+            "icon" : "fas fa-user-tag",
+            "module_group_id" : "Tools",
+        },
+
+        "TXT to JSON" : {
+            "module_url" : "tools:export_txt_to_json",
+            "icon" : "fas fa-user-tag",
+            "module_group_id" : "Tools",
+        },
     }
 
     print("Create module!")

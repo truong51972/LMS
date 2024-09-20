@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     # 'quiz',
     'user_module',
     'course',
+    'tools',
 ]
 
 

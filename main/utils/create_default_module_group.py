@@ -1,7 +1,7 @@
 from module_group.models import ModuleGroup
 
 def create_default_module_group():
-    group_names = ["Training Management", "User Management", "Assessment Management"]
+    group_names = ["Training Management", "User Management", "Assessment Management", "Tools"]
 
     print("Create module_group!")
     for group_name in group_names:
