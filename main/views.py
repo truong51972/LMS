@@ -28,7 +28,7 @@ def home(request):
 
     else:
         context['courses'] = Course.objects.all()
-        print(context)
+        # print(context)
         return render(request, 'home_student.html', context)
 
     

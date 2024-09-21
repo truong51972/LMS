@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import Question, Answer
 from .forms import QuestionForm, AnswerForm
 from module_group.models import ModuleGroup
@@ -91,6 +93,6 @@ def question_delete(request, pk):
     
     context = {
         'name': question.question_text,
-        'cancel_link': 'question:question_list'
+        'cancel_link': reverse('question:question_list')
     }
     return render(request, 'confirm_delete.html', context)

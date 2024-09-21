@@ -10,8 +10,8 @@ import os
 
 
 class Course(models.Model):
-    course_name = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
+    course_name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True, max_length=500)
     image = models.ImageField(upload_to='images/')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import Role
 from .forms import RoleForm
 from module_group.models import Module, ModuleGroup
@@ -58,6 +60,6 @@ def role_delete(request, pk):
     
     context = {
         'name': role.role_name,
-        'cancel_link': 'role:role_list'
+        'cancel_link': reverse('role:role_list')
     }
     return render(request, 'confirm_delete.html', context)

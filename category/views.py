@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from .models import Category
 from .forms import CategoryForm
 from module_group.models import Module, ModuleGroup
@@ -63,6 +64,6 @@ def category_delete(request, pk):
     
     context = {
         'name': category.category_name,
-        'cancel_link': 'category:category_list'
+        'cancel_link': reverse('category:category_list')
     }
     return render(request, 'confirm_delete.html', context)

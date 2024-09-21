@@ -1,5 +1,7 @@
 # views.py
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import Module, ModuleGroup
 from .forms import ModuleForm, ModuleGroupForm
 from django.contrib.auth.decorators import login_required
@@ -59,7 +61,7 @@ def module_group_delete(request, pk):
         return redirect('module_group:module_group_list')
     context = {
         'name': module_group.group_name,
-        'cancel_link': 'module_group:module_group_list'
+        'cancel_link': reverse('module_group:module_group_list')
     }
     return render(request, 'confirm_delete.html', context)
 
@@ -112,6 +114,6 @@ def module_delete(request, pk):
     
     context = {
         'name': module.module_name,
-        'cancel_link': 'module_group:module_list'
+        'cancel_link': reverse('module_group:module_list')
     }
     return render(request, 'confirm_delete.html', context)

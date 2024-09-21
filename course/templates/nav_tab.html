@@ -1,0 +1,11 @@
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link " href="{% url 'course:course_view' course.pk %}">Course View</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'course:quiz_list' course.pk %}">Quiz</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled">Comming soon</a>
+    </li>
+  </ul>

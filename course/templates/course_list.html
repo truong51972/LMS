@@ -23,16 +23,15 @@
                 <td>
                     <img src="{{ course.image.url }}" style="max-width: 18rem">
                 </td>
-                <td>{{ course.created_at }}</td>
-                <td>{{ course.modified_at }}</td>
+                <td>{{ course.created_at|date:"Y-m-d" }}</td>
+                <td>{{ course.modified_at|date:"Y-m-d" }}</td>
                 <td>
                     <div class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
                           ...
                         </a>
-                      
                         <div class="dropdown-menu">
-                          <a href="{% url 'course:course_edit' course.pk %}" class="dropdown-item">Edit</a>
+                          <a href="{% url 'course:course_view' course.pk %}" class="dropdown-item">Detail</a>
                           <a href="{% url 'course:course_delete' course.pk %}" class="dropdown-item">Delete</a>
                         </div>
                       </div>

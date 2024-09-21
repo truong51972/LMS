@@ -36,11 +36,10 @@ urlpatterns = [
     path('role/', include('role.urls')),  
     path('subject/', include('subject.urls')),  
     path('training_program/', include('training_program.urls')),  
-    path('training_program_subjects/', include('training_program_subjects.urls')),  
-    path('user/', include('user.urls')),  
-    path('user_module/', include('user_module.urls')),  
+    path('training_program_subjects/', include('training_program_subjects.urls')),    
     
     path('course/', include('course.urls')),  
+    path('quiz/', include('quiz.urls')),  
 
     path('tools/', include('tools.urls')),  
     # Add more paths for other new apps here

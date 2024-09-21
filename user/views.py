@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import User, Role
 from .forms import UserForm, RoleForm
 from module_group.models import Module, ModuleGroup
@@ -63,6 +65,6 @@ def user_delete(request, pk):
     
     context = {
         'name': user.username,
-        'cancel_link': 'user:user_list'
+        'cancel_link': reverse('user:user_list')
     }
     return render(request, 'confirm_delete.html', context)

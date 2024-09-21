@@ -54,10 +54,10 @@ INSTALLED_APPS = [
     'training_program_subjects',
     'category',
     'question',
-    # 'quiz',
     'user_module',
-    'course',
     'tools',
+    'course',
+    'quiz',
 ]
 
 

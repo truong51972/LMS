@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .models import TrainingProgram
 from training_program_subjects.models import TrainingProgramSubjects
 from .forms import TrainingProgramForm 
@@ -78,6 +80,6 @@ def training_program_delete(request, pk):
     
     context = {
         'name': program.program_name,
-        'cancel_link': 'training_program:training_program_list'
+        'cancel_link': reverse('training_program:training_program_list')
     }
     return render(request, 'confirm_delete.html', context)
