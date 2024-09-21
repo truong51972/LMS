@@ -9,16 +9,12 @@
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            {{ form.quiz_title.label_tag }}
-            {{ form.quiz_title|add_class:"form-control" }}
+            {{ form.option_text.label_tag }}
+            {{ form.option_text|add_class:"form-control" }}
         </div>
         <div class="form-group">
-            {{ form.quiz_description.label_tag }}
-            {{ form.quiz_description|add_class:"form-control" }}
-        </div>
-        <div class="form-group">
-            {{ form.total_mark.label_tag }}
-            {{ form.total_mark|add_class:"form-control" }}
+            {{ form.is_correct.label_tag }}
+            {{ form.is_correct|add_class:"form-control" }}
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
         

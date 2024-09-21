@@ -9,8 +9,8 @@ from module_group.models import ModuleGroup
 from .forms import CourseForm
 from .models import Course
 
-from quiz.forms import Quiz_Form
-from quiz.models import Quiz
+from quiz.forms import Quiz_Form, Question_Form, Answer_Option_Form
+from quiz.models import Quiz, Question, Answer_Option
 
 from django.contrib.auth.decorators import login_required
 from main.utils.block import block_student
@@ -97,18 +97,37 @@ def course_edit(request, course_pk):
 @user_passes_test(block_student)
 def course_view(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
+    module_groups = ModuleGroup.objects.all()
 
-    return render(request, 'course_view.html', {"course" : course})
+    context = {
+        'module_groups' : module_groups,
+        "course" : course,
+    }
+
+    return render(request, 'course_view.html', context)
 
 @login_required
 @user_passes_test(block_student)
 def quiz_list(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
+    module_groups = ModuleGroup.objects.all()
     quizzes = Quiz.objects.filter(course=course)
-    
+    all_questions = {}
+
+    for quiz in quizzes:
+        questions = Question.objects.filter(quiz=quiz)
+        temp = {}
+        for question in questions:
+            answers = Answer_Option.objects.filter(question=question)
+            temp[question] = answers
+
+        all_questions[quiz.pk] = temp
+
     context = {
+        'module_groups' : module_groups,
         "course" : course,
         "quizzes" : quizzes,
+        "all_questions" : all_questions,
     }
     return render(request, 'quiz_list.html', context)
 
@@ -124,7 +143,7 @@ def quiz_delete(request, course_pk, quiz_pk):
     
     context = {
         'name': quiz.quiz_title,
-        'cancel_link': reverse('course:quiz_list', kwargs={'course_pk': course_pk})
+        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
     }
     return render(request, 'confirm_delete.html', context)
 
@@ -142,7 +161,6 @@ def quiz_add(request, course_pk):
         
         if form.is_valid():
             form = form.save()
-            cache.delete("last_course_detail")
             return redirect(reverse('course:quiz_list', kwargs={'course_pk': course_pk}))
     else:
         form = Quiz_Form()
@@ -156,7 +174,7 @@ def quiz_add(request, course_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_edit(request, course_pk, quiz_pk):
+def quiz_information_edit(request, course_pk, quiz_pk):
     quiz = get_object_or_404(Quiz, pk= quiz_pk)
 
     if request.method == 'POST':
@@ -164,13 +182,173 @@ def quiz_edit(request, course_pk, quiz_pk):
 
         if form.is_valid():
             form = form.save()
-            cache.delete("last_course_detail")
-            return redirect(reverse('course:quiz_list', kwargs={'course_pk': course_pk}))
+            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Quiz_Form(instance=quiz)
 
     context = {
         'form': form,
-        'course_pk' : course_pk
+        'course_pk' : course_pk,
+        'quiz_pk' : quiz_pk
     }
     return render(request, 'quiz_form.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def quiz_edit(request, course_pk, quiz_pk):
+    module_groups = ModuleGroup.objects.all()
+    course = get_object_or_404(Course, pk=course_pk)
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
+
+    questions = Question.objects.filter(quiz=quiz)
+    questions_and_answers = {}
+
+    for question in questions:
+        answers = Answer_Option.objects.filter(question=question)
+        questions_and_answers[question] = answers
+
+    context = {
+        'module_groups' : module_groups,
+        "course" : course,
+        "quiz" : quiz,
+        "questions_and_answers" : questions_and_answers,
+    }
+    return render(request, 'quiz_edit.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def question_add(request, course_pk, quiz_pk):
+    quiz = Quiz.objects.get(pk=quiz_pk)
+
+    if request.method == 'POST':
+        form = Question_Form(request.POST)
+
+        form.instance.quiz = quiz
+        
+        if form.is_valid():
+            form = form.save()
+            Quiz.objects.get(pk=quiz_pk).save()
+
+            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    else:
+        form = Question_Form()
+
+    context = {
+        'form': form,
+        'course_pk' : course_pk,
+        'quiz_pk' : quiz_pk,
+    }
+    return render(request, 'question_quiz_form.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def question_delete(request, course_pk, quiz_pk, question_pk):
+    question = get_object_or_404(Question, pk=question_pk)
+
+    if request.method == 'POST':
+        question.delete()
+        Quiz.objects.get(pk=quiz_pk).save()
+
+        return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    
+    context = {
+        'name': question.question_text,
+        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
+    }
+    return render(request, 'confirm_delete.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def question_edit(request, course_pk, quiz_pk, question_pk):
+    question = Question.objects.get(pk=question_pk)
+
+    if request.method == 'POST':
+        form = Question_Form(request.POST, instance=question)
+
+        if form.is_valid():
+            form = form.save()
+            Quiz.objects.get(pk=quiz_pk).save()
+
+            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    else:
+        form = Question_Form(instance=question)
+
+    context = {
+        'form': form,
+        'course_pk' : course_pk,
+        'quiz_pk' : quiz_pk,
+    }
+    return render(request, 'question_quiz_form.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def answer_add(request, course_pk, quiz_pk, question_pk):
+    question = Question.objects.get(pk=question_pk)
+
+    if request.method == 'POST':
+        form = Answer_Option_Form(request.POST)
+
+        form.instance.question = question
+        
+        if form.is_valid():
+            form = form.save()
+            Quiz.objects.get(pk=quiz_pk).save()
+
+            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    else:
+        form = Answer_Option_Form()
+
+    context = {
+        'form': form,
+        'course_pk' : course_pk,
+        'quiz_pk' : quiz_pk,
+    }
+    return render(request, 'answer_quiz_form.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def answer_edit(request, course_pk, quiz_pk, question_pk, answer_pk):
+    answer = Answer_Option.objects.get(pk=answer_pk)
+
+    if request.method == 'POST':
+        form = Answer_Option_Form(request.POST, instance=answer)
+
+        if form.is_valid():
+            form = form.save()
+            Quiz.objects.get(pk=quiz_pk).save()
+
+            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    else:
+        form = Answer_Option_Form(instance=answer)
+
+    context = {
+        'form': form,
+        'course_pk' : course_pk,
+        'quiz_pk' : quiz_pk,
+    }
+    return render(request, 'answer_quiz_form.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+def answer_delete(request, course_pk, quiz_pk, question_pk, answer_pk):
+    answer = get_object_or_404(Answer_Option, pk=answer_pk)
+
+    
+    if request.method == 'POST':
+        answer.delete()
+        Quiz.objects.get(pk=quiz_pk).save()
+
+        return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+    
+    context = {
+        'name': answer.option_text,
+        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
+    }
+    return render(request, 'confirm_delete.html', context)

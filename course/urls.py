@@ -11,9 +11,22 @@ urlpatterns = [
     path('detail/<int:course_pk>/course_view/', views.course_view, name='course_view'),
     path('detail/<int:course_pk>/quiz_list/', views.quiz_list, name='quiz_list'),
 
-    path('detail/<int:course_pk>/quiz_list/delete/<int:quiz_pk>', views.quiz_delete, name='quiz_delete'),
-    path('detail/<int:course_pk>/quiz_list/edit/<int:quiz_pk>', views.quiz_edit, name='quiz_edit'),
     path('detail/<int:course_pk>/quiz_list/add', views.quiz_add, name='quiz_add'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/delete/', views.quiz_delete, name='quiz_delete'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/information_edit/', views.quiz_information_edit, name='quiz_information_edit'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/edit/', views.quiz_edit, name='quiz_edit'),
+
+    # path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/question_list/', views.question_list, name='question_list'),
+
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/add/', views.question_add, name='question_add'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/delete/<int:question_pk>/', views.question_delete, name='question_delete'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/edit/<int:question_pk>/', views.question_edit, name='question_edit'),
+
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/add_answer/<int:question_pk>/', views.answer_add, name='answer_add'),
+
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/question/<int:question_pk>/edit_answer/<int:answer_pk>/', views.answer_edit, name='answer_edit'),
+    path('detail/<int:course_pk>/quiz_list/<int:quiz_pk>/question/<int:question_pk>/delete_answer/<int:answer_pk>/', views.answer_delete, name='answer_delete'),
+
 
     # path('detail/quiz/<int:pk>/<int:pk>/', views.quiz_detail, name='quiz_detail'),
 
