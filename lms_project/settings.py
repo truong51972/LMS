@@ -95,6 +95,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
 if os.environ.get('USER') or os.environ.get('USERNAME') == 'tranq':
+    print('Using local database!')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
