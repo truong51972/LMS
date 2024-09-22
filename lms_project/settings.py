@@ -94,7 +94,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lms_project.wsgi.application'
 
-if os.environ.get('USER') or os.environ.get('USERNAME') == 'tranq':
+if os.environ.get('USERNAME') == 'tranq':
     print('Using local database!')
     DATABASES = {
         'default': {
@@ -106,7 +106,7 @@ if os.environ.get('USER') or os.environ.get('USERNAME') == 'tranq':
             'PORT': '3306',
         }
     }
-else:
+elif os.environ.get('USERNAME') == 'truong51972':
     print('Using pythonanywhere database!')
     DATABASES = {
         'default': {
