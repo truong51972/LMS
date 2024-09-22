@@ -1,5 +1,6 @@
 import os
-import cv2
+# import cv2
+from PIL import Image
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -19,10 +20,16 @@ from django.contrib.auth.decorators import user_passes_test
 from django.core.cache import cache
 
 
+# def compress_image(image_path):
+#     img = cv2.imread(image_path)
+#     img = cv2.resize(img, (400, 225), interpolation=cv2.INTER_AREA)
+#     cv2.imwrite(image_path, img)
+
+
 def compress_image(image_path):
-    img = cv2.imread(image_path)
-    img = cv2.resize(img, (400, 225), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(image_path, img)
+    with Image.open(image_path) as img:
+        img = img.resize((400, 225), Image.Resampling.BILINEAR)
+        img.save(image_path)
 
 
 @login_required
@@ -40,8 +47,8 @@ def course_list(request):
 
 @login_required
 @user_passes_test(block_student)
-def course_delete(request, pk):
-    course = get_object_or_404(Course, pk=pk)
+def course_delete(request, course_pk):
+    course = get_object_or_404(Course, pk=course_pk)
     if request.method == 'POST':
         course.delete()
         return redirect('course:course_list')
@@ -208,8 +215,8 @@ def quiz_edit(request, course_pk, quiz_pk):
         answers = Answer_Option.objects.filter(question=question)
         questions_and_answers[question] = answers
 
+        # 'module_groups' : module_groups,
     context = {
-        'module_groups' : module_groups,
         "course" : course,
         "quiz" : quiz,
         "questions_and_answers" : questions_and_answers,
