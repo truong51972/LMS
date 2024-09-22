@@ -105,7 +105,8 @@ if os.environ.get('USER') or os.environ.get('USERNAME') == 'tranq':
             'PORT': '3306',
         }
     }
-else: 
+else:
+    print('Using pythonanywhere database!')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
