@@ -106,7 +106,7 @@ if os.environ.get('USERNAME') == 'tranq':
             'PORT': '3306',
         }
     }
-elif os.environ.get('USERNAME') == 'truong51972':
+else:
     print('Using pythonanywhere database!')
     DATABASES = {
         'default': {
