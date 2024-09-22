@@ -39,7 +39,6 @@ urlpatterns = [
     path('training_program_subjects/', include('training_program_subjects.urls')),    
     
     path('course/', include('course.urls')),  
-    path('quiz/', include('quiz.urls')),  
 
     path('tools/', include('tools.urls')),  
     # Add more paths for other new apps here

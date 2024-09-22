@@ -20,18 +20,25 @@ def home(request):
     context['user_name'] = request.user.username
 
     role_name = request.user.role.role_name
-    if role_name in ['Admin', 'Instructor']:
-        context['module_groups'] = ModuleGroup.objects.all()
-        context['modules'] = Module.objects.all()
+    # if role_name in ['Admin', 'Instructor']:
+    #     context['module_groups'] = ModuleGroup.objects.all()
+    #     context['modules'] = Module.objects.all()
 
-        return render(request, 'home.html', context)
+    #     return render(request, 'home.html', context)
 
-    else:
-        context['courses'] = Course.objects.all()
-        # print(context)
-        return render(request, 'home_student.html', context)
+    # else:
+    #     context['courses'] = Course.objects.all()
+    #     # print(context)
+    #     return render(request, 'home_student.html', context)
 
-    
+    context['module_groups'] = ModuleGroup.objects.all()
+    context['modules'] = Module.objects.all()
+
+
+    context['courses'] = Course.objects.all()
+    # print(context)
+    return render(request, 'home_student.html', context)
+
 
 
 def base_view(request):

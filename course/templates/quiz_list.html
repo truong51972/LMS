@@ -34,7 +34,7 @@
                     <p><strong>Created At</strong>: {{ quiz.created_at }}</p>
                     <p><strong>Updated at</strong>: {{ quiz.updated_at }}</p>
 
-                    <a href="{% url 'course:quiz_edit' course.pk quiz.pk%}" style="width: 5rem;"
+                    <a href="{% url 'course:quiz_detail' course.pk quiz.pk%}" style="width: 5rem;"
                         class="btn btn-primary">Edit</a>
                 </div>
                 {% endfor %}

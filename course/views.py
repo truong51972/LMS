@@ -1,5 +1,4 @@
 import os
-# import cv2
 from PIL import Image
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,23 +6,12 @@ from django.urls import reverse
 
 from module_group.models import ModuleGroup
 
-from .forms import CourseForm
-from .models import Course
-
-from quiz.forms import Quiz_Form, Question_Form, Answer_Option_Form
-from quiz.models import Quiz, Question, Answer_Option
+from .forms import CourseForm, Quiz_Form, Question_Form, Answer_Option_Form
+from .models import Course, Quiz, Question, Answer_Option
 
 from django.contrib.auth.decorators import login_required
 from main.utils.block import block_student
 from django.contrib.auth.decorators import user_passes_test
-
-from django.core.cache import cache
-
-
-# def compress_image(image_path):
-#     img = cv2.imread(image_path)
-#     img = cv2.resize(img, (400, 225), interpolation=cv2.INTER_AREA)
-#     cv2.imwrite(image_path, img)
 
 
 def compress_image(image_path):
@@ -150,7 +138,7 @@ def quiz_delete(request, course_pk, quiz_pk):
     
     context = {
         'name': quiz.quiz_title,
-        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
+        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
     }
     return render(request, 'confirm_delete.html', context)
 
@@ -181,7 +169,7 @@ def quiz_add(request, course_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_information_edit(request, course_pk, quiz_pk):
+def quiz_edit(request, course_pk, quiz_pk):
     quiz = get_object_or_404(Quiz, pk= quiz_pk)
 
     if request.method == 'POST':
@@ -189,7 +177,7 @@ def quiz_information_edit(request, course_pk, quiz_pk):
 
         if form.is_valid():
             form = form.save()
-            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Quiz_Form(instance=quiz)
 
@@ -203,7 +191,7 @@ def quiz_information_edit(request, course_pk, quiz_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_edit(request, course_pk, quiz_pk):
+def quiz_detail(request, course_pk, quiz_pk):
     module_groups = ModuleGroup.objects.all()
     course = get_object_or_404(Course, pk=course_pk)
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
@@ -221,7 +209,7 @@ def quiz_edit(request, course_pk, quiz_pk):
         "quiz" : quiz,
         "questions_and_answers" : questions_and_answers,
     }
-    return render(request, 'quiz_edit.html', context)
+    return render(request, 'quiz_detail.html', context)
 
 
 @login_required
@@ -238,7 +226,7 @@ def question_add(request, course_pk, quiz_pk):
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Question_Form()
 
@@ -259,11 +247,11 @@ def question_delete(request, course_pk, quiz_pk, question_pk):
         question.delete()
         Quiz.objects.get(pk=quiz_pk).save()
 
-        return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+        return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     
     context = {
         'name': question.question_text,
-        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
+        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
     }
     return render(request, 'confirm_delete.html', context)
 
@@ -280,7 +268,7 @@ def question_edit(request, course_pk, quiz_pk, question_pk):
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Question_Form(instance=question)
 
@@ -306,7 +294,7 @@ def answer_add(request, course_pk, quiz_pk, question_pk):
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Answer_Option_Form()
 
@@ -330,7 +318,7 @@ def answer_edit(request, course_pk, quiz_pk, question_pk, answer_pk):
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Answer_Option_Form(instance=answer)
 
@@ -352,10 +340,10 @@ def answer_delete(request, course_pk, quiz_pk, question_pk, answer_pk):
         answer.delete()
         Quiz.objects.get(pk=quiz_pk).save()
 
-        return redirect(reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
+        return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk}))
     
     context = {
         'name': answer.option_text,
-        'cancel_link': reverse('course:quiz_edit', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
+        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'quiz_pk': quiz_pk})
     }
     return render(request, 'confirm_delete.html', context)

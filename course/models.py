@@ -1,6 +1,4 @@
 from django.db import models
-from django.core.cache import cache
-from django.utils.timezone import now
 
 from user.models import User
 
@@ -37,5 +35,49 @@ class Course(models.Model):
 
 
 class Enrolled_course(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolled_course')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrolled_user')
+
+
+class Quiz(models.Model):
+    course = models.ForeignKey(Course, on_delete= models.CASCADE, related_name='quizzes')
+    quiz_title = models.CharField(max_length=255)
+    quiz_description = models.TextField(blank=True, null=True, max_length=500)
+    total_mark = models.IntegerField()
+    created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="quiz_created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class Question(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, related_name="questions")
+    question_text = models.TextField()
+    question_type = models.CharField(max_length=50)
+    points = models.IntegerField()
+
+
+class Answer_Option(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answer_options')
+    option_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
+
+
+class Student_Quiz_Attempt(models.Model):
+    user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='attempted_quiz')
+    quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, related_name='attempted_student')
+    score = models.IntegerField(default=0)
+    attempt_date = models.DateTimeField(auto_now_add=True)
+    is_proctored = models.BooleanField(default=False)
+    proctoring_data = models.JSONField()
+
+
+class Student_Answer(models.Model):
+    attempt = models.ForeignKey(Student_Quiz_Attempt, on_delete= models.CASCADE, related_name="answers_of_attempted_student")
+    question = models.ForeignKey(Question, on_delete= models.CASCADE, related_name="students_answered")
+    selected_option = models.ForeignKey(Answer_Option, on_delete= models.CASCADE, related_name='students_chose')
+
+
+class AI_Grading(models.Model):
+    answer = models.ForeignKey(Student_Answer, on_delete= models.CASCADE, related_name="graded_by_ai")
+    feedback_text = models.TextField()
+    awarded_points = models.IntegerField(default=0)

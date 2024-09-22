@@ -20,35 +20,11 @@
                         <div class="card-body">
                             <h5 class="card-title">{{course.course_name}}</h5>
                             <p class="card-text text-truncate">{{course.description}}</p>
-                            <p class="card-text"><small class="text-muted">Updated: {{course.modified_at}}</small></p>
+                            <p class="card-text"><small class="text-muted">Updated: {{course.modified_at|date:"Y-m-d"}}</small></p>
                         </div>
                     </div>
                 </div>
             </a>
-            <!-- <div class="card mb-3 w-75">
-                <div class="row no-gutters">
-                    <div class="col-md-4">
-                        <img class="w-100" src="{{ course.image.url }}" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">{{course.course_name}}</h5>
-                            <p class="card-text text-truncate">{{course.description}}</p>
-                            <p class="card-text"><small class="text-muted">{{course.modified_at}}</small></p>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- <div class="col col-sm-4">
-                <div class="card my-3" style="width: 18rem;">
-                    <img src="{{ course.image.url }}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{course.course_name}}</h5>
-                        <p class="card-text text-truncate">{{course.description}}</p>
-                        <a href="#" class="btn btn-primary">Enroll</a>
-                    </div>
-                </div>
-            </div> -->
             {% endfor %}
         </div>
     </div>
