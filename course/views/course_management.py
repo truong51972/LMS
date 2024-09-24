@@ -19,7 +19,7 @@ from main.utils.block import block_student
 
 def compress_image(image_path):
     with Image.open(image_path) as img:
-        img = img.resize((400, 225), Image.Resampling.BILINEAR)
+        img = img.resize((800, 450), Image.Resampling.BILINEAR)
         img.save(image_path)
 
 

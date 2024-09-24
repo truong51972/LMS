@@ -28,5 +28,6 @@ urlpatterns = [
     
     
     path('<int:course_pk>', course_operations.short_link_course, name='short_link_course'),
-    path('<int:course_pk>/<str:course_name>', course_operations.course, name='course'),
+    path('<int:course_pk>/view/<str:course_name>', course_operations.course_detail, name='course_detail'),
+    path('<int:course_pk>/enroll', course_operations.course_enroll, name='course_enroll'),
 ]

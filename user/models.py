@@ -1,6 +1,5 @@
 from django.db import models
 from role.models import Role
-from django.contrib.auth.hashers import PBKDF2PasswordHasher
 
 from django.contrib.auth.models import AbstractUser
 
