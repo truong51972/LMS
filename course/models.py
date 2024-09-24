@@ -1,10 +1,8 @@
+import os
 from django.db import models
-
-from user.models import User
-
 from unidecode import unidecode
 
-import os
+from user.models import User
 
 
 class Course(models.Model):
@@ -29,6 +27,13 @@ class Course(models.Model):
             self.image.name = new_filename
 
         super().save(*args, **kwargs)
+
+    def url(self):
+        course_url = unidecode(self.course_name)
+        course_url = course_url.lower()
+        course_url = course_url.replace(' ', '-')
+
+        return course_url
 
     def __str__(self):
         return self.course_name

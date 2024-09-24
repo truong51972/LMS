@@ -11,7 +11,7 @@
         <h3>Course Available</h3>
         <div class="row row-col-3 mt-4">
             {% for course in courses%}
-            <a class="card mb-3 w-75" style="text-decoration: none; color: black;" href="#">
+            <a class="card mb-3 w-75" style="text-decoration: none; color: black;" href="{% url "course:short_link_course" course.pk%}">
                 <div class="row no-gutters">
                     <div class="col-md-4">
                         <img class="w-100" src="{{ course.image.url }}" alt="...">

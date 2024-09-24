@@ -1,17 +1,20 @@
+"""
+    Creating, modifying, and deleting courses or course parts
+"""
 import os
 from PIL import Image
 
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from module_group.models import ModuleGroup
 
-from .forms import CourseForm, Quiz_Form, Question_Form, Answer_Option_Form
-from .models import Course, Quiz, Question, Answer_Option
+from ..forms import CourseForm, Quiz_Form, Question_Form, Answer_Option_Form
+from ..models import Course, Quiz, Question, Answer_Option
 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from main.utils.block import block_student
-from django.contrib.auth.decorators import user_passes_test
 
 
 def compress_image(image_path):
@@ -30,7 +33,7 @@ def course_list(request):
 
     context['module_groups'] = module_groups
     context['courses'] = courses
-    return render(request, 'course_list.html', context)
+    return render(request, 'course_management/course_list.html', context)
 
 
 @login_required
@@ -61,7 +64,7 @@ def course_add(request):
     else:
         form = CourseForm(request.POST, request.FILES)
 
-    return render(request, 'basic_info_form.html', {'form': form})
+    return render(request, 'course_management/basic_info_form.html', {'form': form})
 
 
 @login_required
@@ -82,16 +85,17 @@ def course_edit(request, course_pk):
             if old_img_path != new_img_path:
                 os.remove(old_img_path)
 
-            return redirect('course:course_list')
+            return redirect(reverse('course:course_view', kwargs={'course_pk': course_pk}))
     else:
         form = CourseForm(instance=course)
-    return render(request, 'basic_info_form.html', {'form': form})
+    return render(request, 'course_management/basic_info_form.html', {'form': form})
 
 
 @login_required
 @user_passes_test(block_student)
 def course_view(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
+    
     module_groups = ModuleGroup.objects.all()
 
     context = {
@@ -99,7 +103,7 @@ def course_view(request, course_pk):
         "course" : course,
     }
 
-    return render(request, 'course_view.html', context)
+    return render(request, 'course_management/course_view.html', context)
 
 @login_required
 @user_passes_test(block_student)
@@ -124,7 +128,7 @@ def quiz_list(request, course_pk):
         "quizzes" : quizzes,
         "all_questions" : all_questions,
     }
-    return render(request, 'quiz_list.html', context)
+    return render(request, 'course_management/quiz_list.html', context)
 
 
 @login_required
@@ -164,7 +168,7 @@ def quiz_add(request, course_pk):
         'form': form,
         'course_pk' : course_pk
     }
-    return render(request, 'quiz_form.html', context)
+    return render(request, 'course_management/quiz_form.html', context)
 
 
 @login_required
@@ -186,7 +190,7 @@ def quiz_edit(request, course_pk, quiz_pk):
         'course_pk' : course_pk,
         'quiz_pk' : quiz_pk
     }
-    return render(request, 'quiz_form.html', context)
+    return render(request, 'course_management/quiz_form.html', context)
 
 
 @login_required
@@ -209,7 +213,7 @@ def quiz_detail(request, course_pk, quiz_pk):
         "quiz" : quiz,
         "questions_and_answers" : questions_and_answers,
     }
-    return render(request, 'quiz_detail.html', context)
+    return render(request, 'course_management/quiz_detail.html', context)
 
 
 @login_required
@@ -235,7 +239,7 @@ def question_add(request, course_pk, quiz_pk):
         'course_pk' : course_pk,
         'quiz_pk' : quiz_pk,
     }
-    return render(request, 'question_quiz_form.html', context)
+    return render(request, 'course_management/question_quiz_form.html', context)
 
 
 @login_required
@@ -277,7 +281,7 @@ def question_edit(request, course_pk, quiz_pk, question_pk):
         'course_pk' : course_pk,
         'quiz_pk' : quiz_pk,
     }
-    return render(request, 'question_quiz_form.html', context)
+    return render(request, 'course_management/question_quiz_form.html', context)
 
 
 @login_required
@@ -303,7 +307,7 @@ def answer_add(request, course_pk, quiz_pk, question_pk):
         'course_pk' : course_pk,
         'quiz_pk' : quiz_pk,
     }
-    return render(request, 'answer_quiz_form.html', context)
+    return render(request, 'course_management/answer_quiz_form.html', context)
 
 
 @login_required
@@ -327,7 +331,7 @@ def answer_edit(request, course_pk, quiz_pk, question_pk, answer_pk):
         'course_pk' : course_pk,
         'quiz_pk' : quiz_pk,
     }
-    return render(request, 'answer_quiz_form.html', context)
+    return render(request, 'course_management/answer_quiz_form.html', context)
 
 
 @login_required
@@ -335,7 +339,6 @@ def answer_edit(request, course_pk, quiz_pk, question_pk, answer_pk):
 def answer_delete(request, course_pk, quiz_pk, question_pk, answer_pk):
     answer = get_object_or_404(Answer_Option, pk=answer_pk)
 
-    
     if request.method == 'POST':
         answer.delete()
         Quiz.objects.get(pk=quiz_pk).save()
