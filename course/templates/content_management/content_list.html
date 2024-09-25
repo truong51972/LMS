@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Course Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% include "course_management/nav_tab.html" %}
+
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                {% for content in contents %}
+                <button
+                    class="nav-link {% if last_content_pk %}{% if content.pk == last_content_pk %}active{% endif %}{% else %}{% if forloop.counter == 1 %}active{% endif %}{% endif %} text-left w-100 text-truncate"
+                    id="content_id_{{ content.pk }}_tab" data-toggle="pill" data-target="#content_id_{{ content.pk }}"
+                    type="button" role="tab" aria-controls="content_id_{{ content.pk }}"
+                    aria-selected="{% if last_content_pk %}{% if content.pk == last_content_pk %}true{% endif %}{% else %}{% if forloop.counter == 1 %}true{% else %}false{% endif %}{% endif %}">
+                    {{ content.content_order }}. {{ content.content_title }}
+                </button>
+
+                {% endfor %}
+
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="tab-content" id="v-pills-tabContent">
+                {% for content, lectures_and_quizzes in contents.items %}
+                <div class="tab-pane fade {% if last_content_pk %}{% if content.pk == last_content_pk %}active show{% endif %}{% else %}{% if forloop.counter == 1 %}active show{% endif %}{% endif %} pl-4"
+                    id="content_id_{{ content.pk }}" role="tabpanel" aria-labelledby="content_id_{{ content.pk }}_tab"
+                    style="border-left: solid 1px black;">
+
+                    <h3 class="mb-4"><strong>Title Content</strong>: {{ content.content_title }}</h3>
+
+                    <div class="dropdown">
+                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                            aria-expanded="false">
+                            Actions
+                        </a>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'course:content_edit' course.pk content.pk%}">Edit</a>
+                            <a class="dropdown-item"
+                                href="{% url 'course:content_delete' course.pk content.pk%}">Delete</a>
+                            <a class="dropdown-item" href="{% url 'course:content_move_up' course.pk content.pk%}">Move
+                                Up</a>
+                            <a class="dropdown-item"
+                                href="{% url 'course:content_move_down' course.pk content.pk%}">Move Down</a>
+                        </div>
+                    </div>
+                    <hr>
+                    <h3>Lecture</h3>
+                    <a href="" class="btn btn-info">Add lecture</a>
+                    <hr>
+                    <h3>Quiz</h3>
+                    {% include "content_management/quiz_collapse.html" %}
+                    <a href="{% url 'course:quiz_add' course.pk content.pk%}" class="btn btn-info">Add quiz</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'course:content_add' course.pk%}" class="btn btn-primary">Add Content</a>
+    <a href="{% url 'course:course_list'%}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

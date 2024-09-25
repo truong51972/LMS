@@ -10,7 +10,7 @@
     <p><strong>Created by</strong>: {{ quiz.created_by.full_name }}</p>
     <p><strong>Created At</strong>: {{ quiz.created_at }}</p>
     <p><strong>Updated at</strong>: {{ quiz.updated_at }}</p>
-    <a href="{% url 'course:quiz_edit' course.pk quiz.pk%}" style="width: 5rem;"
+    <a href="{% url 'course:quiz_edit' course.pk content.pk quiz.pk%}" style="width: 5rem;"
         class="btn btn-primary">Edit</a>
     <table class="table table-hover">
         <thead>
@@ -49,9 +49,9 @@
                                             ...
                                         </a>
                                         <div class="dropdown-menu">
-                                            <a href="{% url 'course:answer_edit' course.pk quiz.pk question.pk answer.pk %}"
+                                            <a href="{% url 'course:answer_edit' course.pk content.pk quiz.pk question.pk answer.pk %}"
                                                 class="dropdown-item">Edit</a>
-                                            <a href="{% url 'course:answer_delete' course.pk quiz.pk question.pk answer.pk %}"
+                                            <a href="{% url 'course:answer_delete' course.pk content.pk quiz.pk question.pk answer.pk %}"
                                                 class="dropdown-item">Delete</a>
                                         </div>
                                     </div>
@@ -60,22 +60,22 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <a href="{% url 'course:answer_add' course.pk quiz.pk question.pk%}" class="btn btn-primary">Add
+                    <a href="{% url 'course:answer_add' course.pk content.pk quiz.pk question.pk%}" class="btn btn-primary">Add
                         Answer</a>
                     <hr>
-                    <a href="{% url 'course:question_edit' course.pk quiz.pk question.pk%}" class="btn btn-warning">Edit</a>
-                    <a href="{% url 'course:question_delete' course.pk quiz.pk question.pk%}" class="btn btn-danger">Delete</a>
+                    <a href="{% url 'course:question_edit' course.pk content.pk quiz.pk question.pk%}" class="btn btn-warning">Edit</a>
+                    <a href="{% url 'course:question_delete' course.pk content.pk quiz.pk question.pk%}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'course:question_add' course.pk quiz.pk%}" class="btn btn-primary">Add Question</a>
+    <a href="{% url 'course:question_add' course.pk content.pk quiz.pk%}" class="btn btn-primary">Add Question</a>
 
 
     <hr>
-    <a href="{% url 'course:quiz_list' course.pk %}" class="btn btn-secondary">Back to Quiz List</a>
-    <a href="{% url 'course:quiz_delete' course.pk quiz.pk%}" class="btn btn-danger">Delete This
+    <a href="{% url 'course:content_list' course.pk %}" class="btn btn-secondary">Back to Content List</a>
+    <a href="{% url 'course:quiz_delete' course.pk content.pk quiz.pk%}" class="btn btn-danger">Delete This
         Quiz!</a>
 </div>
 {% endblock %}

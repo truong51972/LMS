@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course, Quiz, Question, Answer_Option
+from .models import Course, Quiz, Question, Answer_Option, Course_content
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -23,3 +23,8 @@ class Answer_Option_Form(forms.ModelForm):
     class Meta:
         model = Answer_Option
         fields = ['option_text', 'is_correct']
+
+class Course_Content_Form(forms.ModelForm):
+    class Meta:
+        model = Course_content
+        fields = ['content_title']

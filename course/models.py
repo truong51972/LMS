@@ -56,8 +56,16 @@ class Course_content(models.Model):
 class Lecture(models.Model):
     lecture_title = models.CharField(max_length=255)
     content = models.TextField()
+    order = models.IntegerField()
 
+    created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="lecture_created")
     course_content = models.ForeignKey(Course_content, on_delete=models.CASCADE, related_name='lectures')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('order', 'course_content')
 
     def __str__(self):
         return self.lecture_title
@@ -75,6 +83,7 @@ class Quiz(models.Model):
     quiz_title = models.CharField(max_length=255)
     quiz_description = models.TextField(blank=True, null=True, max_length=500)
     total_mark = models.IntegerField()
+    order = models.IntegerField()
 
     created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="quiz_created")
     course_content = models.ForeignKey(Course_content, on_delete=models.CASCADE, related_name='quizzes')
@@ -82,6 +91,11 @@ class Quiz(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('order', 'course_content')
+
+    def __str__(self):
+        return self.quiz_title
 
 class Question(models.Model):
     question_text = models.TextField()
