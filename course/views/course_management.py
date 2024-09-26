@@ -10,7 +10,7 @@ from django.urls import reverse
 
 from module_group.models import ModuleGroup
 
-from ..forms import CourseForm, Quiz_Form, Question_Form, Answer_Option_Form
+from ..forms import Course_Form, Quiz_Form, Question_Form, Answer_Option_Form
 from ..models import Course, Quiz, Question, Answer_Option
 
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -55,14 +55,14 @@ def course_delete(request, course_pk):
 @user_passes_test(block_student)
 def course_add(request):
     if request.method == 'POST':
-        form = CourseForm(request.POST, request.FILES)
+        form = Course_Form(request.POST, request.FILES)
         if form.is_valid():
             form = form.save()
 
             compress_image(form.image.path)
             return redirect('course:course_list')
     else:
-        form = CourseForm(request.POST, request.FILES)
+        form = Course_Form(request.POST, request.FILES)
 
     return render(request, 'course_management/basic_info_form.html', {'form': form})
 
@@ -74,7 +74,7 @@ def course_edit(request, course_pk):
     old_img_path = course.image.path
 
     if request.method == 'POST':
-        form = CourseForm(request.POST, request.FILES, instance=course)
+        form = Course_Form(request.POST, request.FILES, instance=course)
         if form.is_valid():
 
             course_info = form.save()
@@ -87,7 +87,7 @@ def course_edit(request, course_pk):
 
             return redirect(reverse('course:course_view', kwargs={'course_pk': course_pk}))
     else:
-        form = CourseForm(instance=course)
+        form = Course_Form(instance=course)
     return render(request, 'course_management/basic_info_form.html', {'form': form})
 
 

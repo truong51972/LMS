@@ -40,35 +40,53 @@ class Course(models.Model):
         return self.course_name
 
 
-class Course_content(models.Model):
-    content_title = models.CharField(max_length=255)
-    content_order = models.IntegerField()
-
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='course_contents')
-
-    class Meta:
-        unique_together = ('course', 'content_order')
-    
-    def __str__(self):
-        return self.content_title
-    
-
-class Lecture(models.Model):
-    lecture_title = models.CharField(max_length=255)
-    content = models.TextField()
+class Sub_Course(models.Model):
+    title = models.CharField(max_length=255)
     order = models.IntegerField()
 
-    created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="lecture_created")
-    course_content = models.ForeignKey(Course_content, on_delete=models.CASCADE, related_name='lectures')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sub_courses')
+
+    class Meta:
+        unique_together = ('course', 'order')
+    
+    def __str__(self):
+        return self.title
+    
+
+class Module(models.Model):
+    title = models.CharField(max_length=255)
+    order = models.IntegerField()
+
+    created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="module_created")
+    sub_course = models.ForeignKey(Sub_Course, on_delete=models.CASCADE, related_name='modules')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        unique_together = ('order', 'course_content')
+        unique_together = ('order', 'sub_course')
 
     def __str__(self):
-        return self.lecture_title
+        return self.title
+
+class Sub_Module(models.Model):
+    title = models.CharField(max_length=255)
+    content_html_list = models.TextField(blank=True, null=True)
+    image_list = models.TextField(blank=True, null=True)
+    video_url = models.TextField(blank=True, null=True)
+
+    order = models.IntegerField()
+
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name='sub_modules')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        unique_together = ('order', 'module')
+
+    def __str__(self):
+        return self.title
 
 
 class Enrolled_course(models.Model):
@@ -86,13 +104,13 @@ class Quiz(models.Model):
     order = models.IntegerField()
 
     created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="quiz_created")
-    course_content = models.ForeignKey(Course_content, on_delete=models.CASCADE, related_name='quizzes')
+    sub_course = models.ForeignKey(Sub_Course, on_delete=models.CASCADE, related_name='quizzes')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('order', 'course_content')
+        unique_together = ('order', 'sub_course')
 
     def __str__(self):
         return self.quiz_title
@@ -101,6 +119,7 @@ class Question(models.Model):
     question_text = models.TextField()
     question_type = models.CharField(max_length=50)
     points = models.IntegerField()
+
 
     quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, related_name="questions")
 

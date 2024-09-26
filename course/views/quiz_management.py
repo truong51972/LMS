@@ -5,8 +5,8 @@ from django.core.cache import cache
 
 from module_group.models import ModuleGroup
 
-from ..forms import CourseForm, Quiz_Form, Question_Form, Answer_Option_Form
-from ..models import Course, Quiz, Question, Answer_Option, Course_content
+from ..forms import Course_Form, Quiz_Form, Question_Form, Answer_Option_Form
+from ..models import Course, Quiz, Question, Answer_Option, Sub_Course
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from main.utils.block import block_student
@@ -40,40 +40,40 @@ def quiz_list(request, course_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_delete(request, course_pk, content_pk, quiz_pk):
+def quiz_delete(request, course_pk, sub_course_pk, quiz_pk):
     course = get_object_or_404(Course, pk=course_pk)
-    content = get_object_or_404(Course_content, pk=content_pk)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
 
     if request.method == 'POST':
         quiz.delete()
-        return redirect(reverse('course:content_list', kwargs={'course_pk': course_pk}))
+        return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
     
     context = {
         'name': quiz.quiz_title,
-        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'content_pk' : content_pk,'quiz_pk': quiz_pk})
+        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk' : sub_course_pk,'quiz_pk': quiz_pk})
     }
     return render(request, 'confirm_delete.html', context)
 
 
 @login_required
 @user_passes_test(block_student)
-def quiz_add(request, course_pk, content_pk):
-    cache.set('last_content_pk', content_pk, timeout=60*5)
+def quiz_add(request, course_pk, sub_course_pk):
+    cache.set('last_sub_course_pk', sub_course_pk, timeout=60*5)
 
-    content = get_object_or_404(Course_content, pk= content_pk)
-    num_quiz = len(content.quizzes.all())
+    sub_course = get_object_or_404(Sub_Course, pk= sub_course_pk)
+    num_quiz = len(sub_course.quizzes.all())
 
     if request.method == 'POST':
         form = Quiz_Form(request.POST)
 
-        form.instance.course_content = content
+        form.instance.sub_course = sub_course
         form.instance.created_by = request.user
         form.instance.order = num_quiz + 1
         
         if form.is_valid():
             form = form.save()
-            return redirect(reverse('course:content_list', kwargs={'course_pk': course_pk}))
+            return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
     else:
         form = Quiz_Form()
 
@@ -86,9 +86,9 @@ def quiz_add(request, course_pk, content_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_edit(request, course_pk, content_pk, quiz_pk):
+def quiz_edit(request, course_pk, sub_course_pk, quiz_pk):
     course = get_object_or_404(Course, pk=course_pk)
-    content = get_object_or_404(Course_content, pk=content_pk)
+    content = get_object_or_404(Sub_Course, pk=sub_course_pk)
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
 
     if request.method == 'POST':
@@ -96,14 +96,14 @@ def quiz_edit(request, course_pk, content_pk, quiz_pk):
 
         if form.is_valid():
             form = form.save()
-            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'content_pk' : content_pk, 'quiz_pk': quiz_pk}))
+            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk' : sub_course_pk, 'quiz_pk': quiz_pk}))
     else:
         form = Quiz_Form(instance=quiz)
 
     context = {
         'form': form,
         'course_pk' : course_pk,
-        'content_pk' : content_pk,
+        'sub_course_pk' : sub_course_pk,
         'quiz_pk' : quiz_pk
     }
     return render(request, 'quiz_management/quiz_form.html', context)
@@ -111,12 +111,12 @@ def quiz_edit(request, course_pk, content_pk, quiz_pk):
 
 @login_required
 @user_passes_test(block_student)
-def quiz_detail(request, course_pk, content_pk, quiz_pk):
-    cache.set('last_content_pk', content_pk, timeout=60*5)
+def quiz_detail(request, course_pk, sub_course_pk, quiz_pk):
+    cache.set('last_sub_course_pk', sub_course_pk, timeout=60*5)
     
     module_groups = ModuleGroup.objects.all()
     course = get_object_or_404(Course, pk=course_pk)
-    content = get_object_or_404(Course_content, pk=content_pk)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
 
     questions = Question.objects.filter(quiz=quiz)
@@ -129,50 +129,50 @@ def quiz_detail(request, course_pk, content_pk, quiz_pk):
         # 'module_groups' : module_groups,
     context = {
         "course" : course,
-        "content" : content,
+        "sub_course" : sub_course,
         "quiz" : quiz,
         "questions_and_answers" : questions_and_answers,
     }
     return render(request, 'quiz_management/quiz_detail.html', context)
 
 
-def quiz_move_up(request, course_pk, content_pk, quiz_pk):
-    cache.set('last_content_pk', content_pk, timeout=60*5)
-    course_content = get_object_or_404(Course_content, pk=content_pk)
+def quiz_move_up(request, course_pk, sub_course_pk, quiz_pk):
+    cache.set('last_sub_course_pk', sub_course_pk, timeout=60*5)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
 
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
     quiz_num = quiz.order
     if quiz_num != 1:
-        quiz_temp = course_content.quizzes.filter(order= (quiz_num - 1))[0]
+        quiz_temp = sub_course.quizzes.filter(order= (quiz_num - 1))[0]
         quiz_temp.order = 0
         quiz_temp.save()
 
         quiz.order = (quiz_num - 1)
         quiz.save()
 
-        quiz_temp = course_content.quizzes.filter(order= 0)[0]
+        quiz_temp = sub_course.quizzes.filter(order= 0)[0]
         quiz_temp.order = quiz_num
         quiz_temp.save()
-    return redirect(reverse('course:content_list', kwargs={'course_pk': course_pk}))
+    return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
 
 
-def quiz_move_down(request, course_pk, content_pk, quiz_pk):
-    cache.set('last_content_pk', content_pk, timeout=60*5)
-    course_content = get_object_or_404(Course_content, pk=content_pk)
+def quiz_move_down(request, course_pk, sub_course_pk, quiz_pk):
+    cache.set('last_sub_course_pk', sub_course_pk, timeout=60*5)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
 
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
     quiz_num = quiz.order
-    num_quiz = len(course_content.quizzes.all())
+    num_quiz = len(sub_course.quizzes.all())
 
     if quiz_num != num_quiz:
-        quiz_temp = course_content.quizzes.filter(order= (quiz_num + 1))[0]
+        quiz_temp = sub_course.quizzes.filter(order= (quiz_num + 1))[0]
         quiz_temp.order = 0
         quiz_temp.save()
 
         quiz.order = (quiz_num + 1)
         quiz.save()
 
-        quiz_temp = course_content.quizzes.filter(order= 0)[0]
+        quiz_temp = sub_course.quizzes.filter(order= 0)[0]
         quiz_temp.order = quiz_num
         quiz_temp.save()
-    return redirect(reverse('course:content_list', kwargs={'course_pk': course_pk}))
+    return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
