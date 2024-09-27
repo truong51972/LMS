@@ -136,8 +136,8 @@ def upload_existed_course(request):
 
             course, created = Course.objects.get_or_create(course_name= course_name, defaults={"image": image_file_path, "description": lorem_text})
 
-            if created is False:
-                shutil.copy("data/images/default_image.jpg", "media/" + image_file_path)
+            # if created is False:
+            #     shutil.copy("data/images/default_image.jpg", "media/" + image_file_path)
 
             order = len(course.sub_courses.all()) + 1
             sub_course, _ = Sub_Course.objects.get_or_create(title= sub_course_title, defaults={"course": course, "order": order})
