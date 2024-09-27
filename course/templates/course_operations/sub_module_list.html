@@ -1,0 +1,15 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col-11">Lesson</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sub_module in sub_modules %}
+      <tr class="{% if sub_module_pk %}{% if sub_module_pk == sub_module.pk %}table-active{% endif %}{% endif %}">
+        <td id="sub_module_{{sub_module.pk}}">{{ module.order }}.{{ sub_module.order }}) <a href="{% url "course:short_link_sub_course" course.pk sub_module.pk%}">{{ sub_module.title }}</a></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+

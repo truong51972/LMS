@@ -15,12 +15,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 def sub_course_list(request, course_pk):
     last_sub_course_pk = cache.get('last_sub_course_pk')
     cache.delete('last_sub_course_pk')
-    
+    module_groups = ModuleGroup.objects.all()
+
     course = get_object_or_404(Course, pk=course_pk)
 
     sub_courses = course.sub_courses.all().order_by("order")
 
     context = {
+        "module_groups" : module_groups,
         "last_sub_course_pk" : last_sub_course_pk,
         "course" : course,
         "sub_courses": {},

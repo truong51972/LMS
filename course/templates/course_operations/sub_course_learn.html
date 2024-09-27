@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row" style="height: 90vh;">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-9 px-4 d-flex flex-column" style="height: 90vh;">
+            <div class="flex-grow-1 overflow-auto"> <!-- Fixed height -->
+                <div class="vh-100">
+                    {% if video_url != 'nan' %}
+                    <iframe src="{{video_url}}" class="w-100 h-75" frameborder="0" allowfullscreen></iframe>
+                    <hr>
+                    {% endif %}
+                    <h2 class="mb-3">{{title}}</h2>
+                    <hr>
+                    {% for content_html in content_html_list %}
+                    {{ content_html |safe }}
+                    {% endfor %}
+                    <hr>
+                    {% for image_url in image_list %}
+                    <img src="{{image_url}}" alt="Image" style="max-width: 100%; height: auto; margin-top: 10px;">
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+
+        <nav class="col-md-3 d-none d-md-block sidebar" style="height: 90vh; overflow-y: auto;">
+            <div class="sidebar-sticky">
+                <div>
+                    {% for sub_course, modules_and_quizzes in sub_courses.items %}
+                    <div class="mb-5">
+                        <h5>{{ sub_course }}</h5>
+                        <hr>
+                        {% include "course_operations/module_collapse.html" %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('sub_module_{{sub_module_pk}}').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

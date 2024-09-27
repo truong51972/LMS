@@ -102,6 +102,9 @@ if os.environ.get('USERNAME') == 'tranq':
             'PASSWORD': '51972',
             'HOST': 'localhost',
             'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
         }
     }
 else:
@@ -113,6 +116,9 @@ else:
             'PASSWORD': 'Anhyeuem51972@',
             'HOST': 'truong51972.mysql.pythonanywhere-services.com',
             'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
         }
     }
 

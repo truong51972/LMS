@@ -15,6 +15,7 @@ app_name = 'course'
 urlpatterns = [
     path('course_list', course_management.course_list, name='course_list'),
 
+    path('upload_existed_course/', course_management.upload_existed_course, name='upload_existed_course'),
     path('course_add/', course_management.course_add, name='course_add'),
     path('course_edit/<int:course_pk>/', course_management.course_edit, name='course_edit'),
     path('course_delete/<int:course_pk>/', course_management.course_delete, name='course_delete'),
@@ -55,6 +56,9 @@ urlpatterns = [
     
     
     path('<int:course_pk>', course_operations.short_link_course, name='short_link_course'),
-    path('<int:course_pk>/view/<str:course_name>', course_operations.course_detail, name='course_detail'),
+    path('<int:course_pk>/<str:course_name>/preview/', course_operations.course_preview, name='course_preview'),
     path('<int:course_pk>/enroll', course_operations.course_enroll, name='course_enroll'),
+
+    path('<int:course_pk>/learn/<int:sub_module_pk>/', course_operations.short_link_sub_course, name='short_link_sub_course'),
+    path('<int:course_pk>/<str:course_name>/learn/<int:sub_module_pk>', course_operations.sub_course_learn, name='sub_course_learn'),
 ]

@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-4">
                             {% if is_enrolled %}
-                            <a href="" class="btn btn-primary w-100">Go to Course</a>
+                            <a href="" class="btn btn-primary w-100 disabled">Enrolled</a>
                             <a href="/" class="btn btn-secondary w-100 mt-1">Back</a>
                             {% else %}
                             <a href="{% url 'course:course_enroll' course.pk %}" class="btn btn-primary w-100">Enroll</a>
@@ -41,6 +41,15 @@
         </div>
     </div>
     <hr>
-    <h4>Course content</h4>
+    <h3 class="mb-5">Course content</h3>
+    <div class="container">
+        {% for sub_course, modules_and_quizzes in sub_courses.items %}
+        <div class="my-5">
+            <h5 >{{ sub_course }}</h5>
+            <hr>
+            {% include "course_operations/module_collapse.html" %}
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
