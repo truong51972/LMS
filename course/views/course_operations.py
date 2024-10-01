@@ -11,17 +11,15 @@ from module_group.models import ModuleGroup
 
 from ..models import Course, Quiz, Question, Answer_Option, Enrolled_course, Module, Sub_Course, Sub_Module
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from main.utils.block import custom_user_passes_test, block_unenrolled_student
 
-
-@login_required
 def short_link_course(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
     return redirect(reverse('course:course_preview', kwargs={'course_pk': course_pk, 'course_name': course_name}))
 
 
-@login_required
 def course_preview(request, course_pk, course_name):
     course = get_object_or_404(Course, pk=course_pk)
     if course_name != course.url():
@@ -29,8 +27,11 @@ def course_preview(request, course_pk, course_name):
 
     created_by = set()
 
-    enrolled_user = course.enrolled_user.filter(user= request.user)
-    is_enrolled = True if enrolled_user else False
+    if request.user.is_authenticated:
+        enrolled_users = course.enrolled_users.filter(user= request.user)
+        is_enrolled = True if enrolled_users else False
+    else:
+        is_enrolled = False
 
     context = {
         "course" : course,
@@ -72,6 +73,7 @@ def course_enroll(request, course_pk):
 
 
 @login_required
+@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
 def short_link_sub_course(request, course_pk, sub_module_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
@@ -81,6 +83,7 @@ def short_link_sub_course(request, course_pk, sub_module_pk):
     return redirect(reverse('course:sub_course_learn', kwargs={'course_pk': course_pk, 'course_name': course_name, 'sub_module_pk': sub_module_pk}))
 
 @login_required
+@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
 def sub_course_learn(request, course_pk, course_name, sub_module_pk):
     course = get_object_or_404(Course, pk=course_pk)
     if course_name != course.url():

@@ -1,6 +1,7 @@
 """
     Creating, modifying, and deleting courses or course parts
 """
+import re
 import os
 import shutil
 import random
@@ -17,7 +18,7 @@ from ..forms import Course_Form, Quiz_Form, Question_Form, Answer_Option_Form
 from ..models import Course, Sub_Course, Module, Sub_Module, Quiz, Question, Answer_Option
 
 from django.contrib.auth.decorators import login_required, user_passes_test
-from main.utils.block import block_student
+from main.utils.block import block_student, block_by_role_name, custom_user_passes_test
 
 from django.contrib import messages
 
@@ -28,7 +29,7 @@ def compress_image(image_path):
 
 
 @login_required
-@user_passes_test(block_student)
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def course_list(request):
     context = {}
 
@@ -41,7 +42,7 @@ def course_list(request):
 
 
 @login_required
-@user_passes_test(block_student)
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def course_delete(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
     if request.method == 'POST':
@@ -56,7 +57,7 @@ def course_delete(request, course_pk):
 
 
 @login_required
-@user_passes_test(block_student)
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def course_add(request):
     if request.method == 'POST':
         form = Course_Form(request.POST, request.FILES)
@@ -72,7 +73,7 @@ def course_add(request):
 
 
 @login_required
-@user_passes_test(block_student)
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def course_edit(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
     old_img_path = course.image.path
@@ -99,7 +100,7 @@ def course_edit(request, course_pk):
 
 
 @login_required
-@user_passes_test(block_student)
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def course_view(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
     
@@ -113,7 +114,19 @@ def course_view(request, course_pk):
     return render(request, 'course_management/course_view.html', context)
 
 
+@login_required
+@custom_user_passes_test(block_by_role_name, "main:home", roles_name='Student')
 def upload_existed_course(request):
+    def is_valid_url(url: str) -> bool:
+        if not isinstance(url, str):
+            return False
+        
+        url_pattern = re.compile(
+            r'^(https?|ftp)://[^\s/$.?#].[^\s]*$'
+        )
+
+        return re.match(url_pattern, url) is not None
+
     if request.method == "POST":
         csv_file = request.FILES['csv_file']
         if not csv_file.name.endswith('.csv'):
@@ -124,7 +137,9 @@ def upload_existed_course(request):
         df = pd.read_csv(csv_file)
 
         image_file_path = f"images/default_image_{random.randint(0,10000000)}.jpg"
-        
+
+        course = None
+
         for index, row in df.iterrows():
             course_name = row.iloc[0]
             sub_course_title = row.iloc[1]
@@ -132,21 +147,48 @@ def upload_existed_course(request):
             sub_module_title = row.iloc[3]
             content_html_list = row.iloc[4]
             image_list = row.iloc[5]
+
             video_url = row.iloc[6]
-
-            course, created = Course.objects.get_or_create(course_name= course_name, defaults={"image": image_file_path, "description": lorem_text})
-
-            # if created is False:
-            #     shutil.copy("data/images/default_image.jpg", "media/" + image_file_path)
+            if not is_valid_url(video_url):
+                video_url = ""
+            
+            if course is None:
+                course = Course.objects.create(
+                    course_name= course_name,
+                    image= image_file_path,
+                    description= lorem_text
+                )
 
             order = len(course.sub_courses.all()) + 1
-            sub_course, _ = Sub_Course.objects.get_or_create(title= sub_course_title, defaults={"course": course, "order": order})
+            sub_course, _ = Sub_Course.objects.get_or_create(
+                title= sub_course_title,
+                course= course,
+                defaults= {
+                    "order": order
+                }
+            )
 
             order = len(sub_course.modules.all()) + 1
-            module, _ = Module.objects.get_or_create(title= module_title, defaults={"sub_course": sub_course, "order": order, "created_by": request.user})
+            module, _ = Module.objects.get_or_create(
+                title= module_title,
+                sub_course= sub_course,
+                defaults= {
+                    "order": order,
+                    "created_by": request.user
+                }
+            )
             
             order = len(module.sub_modules.all()) + 1
-            sub_module, _ = Sub_Module.objects.get_or_create(title= sub_module_title, defaults={"module": module, "order": order, "content_html_list": str(content_html_list), "image_list": image_list, "video_url": video_url})
+            sub_module, _ = Sub_Module.objects.get_or_create(
+                title= sub_module_title,
+                module= module,
+                defaults={
+                    "order": order,
+                    "content_html_list": str(content_html_list),
+                    "image_list": image_list,
+                    "video_url": video_url
+                }
+            )
 
         return redirect('course:course_list')
     

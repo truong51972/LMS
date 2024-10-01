@@ -12,14 +12,14 @@ from .utils.create_default_module_group import create_default_module_group
 from .utils.create_default_modules import create_default_modules
 
 def home(request):
-    if not request.user.is_authenticated:
-        return render(request, 'home_not_logged.html')
+    # if not request.user.is_authenticated:
+    #     return render(request, 'home_not_logged.html')
 
     context = {}
     
-    context['user_name'] = request.user.username
+    # context['user_name'] = request.user.username
 
-    role_name = request.user.role.role_name
+    # role_name = request.user.role.role_name
     # if role_name in ['Admin', 'Instructor']:
     #     context['module_groups'] = ModuleGroup.objects.all()
     #     context['modules'] = Module.objects.all()

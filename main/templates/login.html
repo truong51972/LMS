@@ -3,7 +3,7 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="d-flex align-items-center" style="height:80vh">
+<div class="d-flex align-items-center" style="height:90vh">
     <div class="mx-auto">
         <h2>Login</h2>
         <form method="post">
@@ -11,6 +11,46 @@
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
+    </div>
+</div>
+<div class="accordion" id="accordionExample">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="mb-0">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Some Default Account
+                </button>
+            </h2>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                <ul>
+                    <li>
+                        Admin
+                        <ul>
+                            <li>User name: admin</li>
+                            <li>Password: admin</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Instructor
+                        <ul>
+                            <li>User name: instructor</li>
+                            <li>Password: 123</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Student
+                        <ul>
+                            <li>User name: student</li>
+                            <li>Password: 123</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

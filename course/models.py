@@ -90,8 +90,8 @@ class Sub_Module(models.Model):
 
 
 class Enrolled_course(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolled_course')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrolled_user')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolled_courses')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrolled_users')
 
     class Meta:
         unique_together = ('user', 'course')

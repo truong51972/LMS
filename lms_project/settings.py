@@ -167,6 +167,8 @@ AUTH_USER_MODEL = 'user.User'
 #     'django.contrib.auth.backends.ModelBackend',  # Đảm bảo backend mặc định vẫn được sử dụng
 # ]
 
+LOGIN_URL = '/login/'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 

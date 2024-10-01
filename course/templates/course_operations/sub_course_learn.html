@@ -8,7 +8,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-9 px-4 d-flex flex-column" style="height: 90vh;">
             <div class="flex-grow-1 overflow-auto"> <!-- Fixed height -->
                 <div class="vh-100">
-                    {% if video_url != 'nan' %}
+                    {% if video_url %}
                     <iframe src="{{video_url}}" class="w-100 h-75" frameborder="0" allowfullscreen></iframe>
                     <hr>
                     {% endif %}
