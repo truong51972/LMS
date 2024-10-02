@@ -1,7 +1,6 @@
 import os
 from django.db import models
 from unidecode import unidecode
-
 from user.models import User
 
 
@@ -71,8 +70,7 @@ class Module(models.Model):
 
 class Sub_Module(models.Model):
     title = models.CharField(max_length=255)
-    content_html_list = models.TextField(blank=True, null=True)
-    image_list = models.TextField(blank=True, null=True)
+    html_content = models.TextField(blank=True, null=True)
     video_url = models.TextField(blank=True, null=True)
 
     order = models.IntegerField()
@@ -89,6 +87,27 @@ class Sub_Module(models.Model):
         return self.title
 
 
+class Image(models.Model):
+    image = models.ImageField(upload_to='images/')
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="images")
+
+    def delete(self, *args, **kwargs):
+        try:
+            self.image.delete()
+        except PermissionError:
+            print('Error!')
+
+        super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            name, ext = os.path.splitext(self.image.name)
+            new_filename = f"{unidecode(name)}{ext}"
+            self.image.name = new_filename
+
+        super().save(*args, **kwargs)
+        
 class Enrolled_course(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrolled_courses')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrolled_users')

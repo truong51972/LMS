@@ -55,7 +55,13 @@ def sub_module_edit(request, course_pk, sub_course_pk, module_pk, sub_module_pk)
         if form.is_valid():
             form = form.save()
 
-            return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
+            context = {
+                'course_pk' : course_pk,
+                'sub_course_pk' : sub_course_pk,
+                'module_pk' : module_pk,
+                'sub_module_pk' : sub_module_pk,
+            }
+            return redirect(reverse('course:sub_module_edit', kwargs=context))
     else:
         form = Sub_Module_Form(instance=sub_module)
 

@@ -7,6 +7,7 @@ from .views import quiz_management
 from .views import question_management
 from .views import answer_management
 from .views import course_operations
+from .views import image_management
 
 
 
@@ -20,6 +21,10 @@ urlpatterns = [
     path('course_edit/<int:course_pk>/', course_management.course_edit, name='course_edit'),
     path('course_delete/<int:course_pk>/', course_management.course_delete, name='course_delete'),
     path('<int:course_pk>/course_view/', course_management.course_view, name='course_view'),
+
+    path('<int:course_pk>/image_list/', image_management.image_list, name='image_list'),
+    path('<int:course_pk>/image_add/', image_management.image_add, name='image_add'),
+    path('<int:course_pk>/image/<int:image_pk>/delete', image_management.image_delete, name='image_delete'),
 
     path('<int:course_pk>/sub_course/list/', sub_course_management.sub_course_list, name='sub_course_list'),
     path('<int:course_pk>/sub_course/add/', sub_course_management.sub_course_add, name='sub_course_add'),
@@ -59,6 +64,9 @@ urlpatterns = [
     path('<int:course_pk>/<str:course_name>/preview/', course_operations.course_preview, name='course_preview'),
     path('<int:course_pk>/enroll', course_operations.course_enroll, name='course_enroll'),
 
-    path('<int:course_pk>/learn/<int:sub_module_pk>/', course_operations.short_link_sub_course, name='short_link_sub_course'),
-    path('<int:course_pk>/<str:course_name>/learn/<int:sub_module_pk>', course_operations.sub_course_learn, name='sub_course_learn'),
+    path('<int:course_pk>/learn/<int:sub_module_pk>/', course_operations.short_link_learning_view, name='short_link_learning_view'),
+    path('<int:course_pk>/<str:course_name>/learn/<int:sub_module_pk>', course_operations.learning_view, name='learning_view'),
+
+    path('<int:course_pk>/quiz/<int:quiz_pk>/', course_operations.short_link_quiz, name='short_link_quiz'),
+    path('<int:course_pk>/<str:course_name>/quiz_preview/<int:quiz_pk>', course_operations.quiz_preview, name='quiz_preview'),
 ]

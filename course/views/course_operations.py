@@ -74,40 +74,16 @@ def course_enroll(request, course_pk):
 
 @login_required
 @custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
-def short_link_sub_course(request, course_pk, sub_module_pk):
+def short_link_learning_view(request, course_pk, sub_module_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
     
     sub_module = get_object_or_404(Sub_Module, pk=sub_module_pk)
 
-    return redirect(reverse('course:sub_course_learn', kwargs={'course_pk': course_pk, 'course_name': course_name, 'sub_module_pk': sub_module_pk}))
+    return redirect(reverse('course:learning_view', kwargs={'course_pk': course_pk, 'course_name': course_name, 'sub_module_pk': sub_module_pk}))
 
-@login_required
-@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
-def sub_course_learn(request, course_pk, course_name, sub_module_pk):
-    course = get_object_or_404(Course, pk=course_pk)
-    if course_name != course.url():
-        raise Http404("Incorrect course name!")
-    
-    sub_module = get_object_or_404(Sub_Module, pk=sub_module_pk)
-    module_pk = sub_module.module.id
 
-    content_html_list = ast.literal_eval(sub_module.content_html_list)
-    image_list = ast.literal_eval(sub_module.image_list)
-    video_url = sub_module.video_url
-    title = sub_module.title
-
-    context = {
-        "course" : course,
-        "title": title,
-        "module_pk" : module_pk,
-        "sub_module_pk" : sub_module_pk,
-        'content_html_list': content_html_list,
-        'image_list': image_list,
-        'video_url': video_url,
-        "sub_courses" : {}
-    }
-
+def query_all_sub_courses(course, context:dict):
     sub_courses = course.sub_courses.all()
     for sub_course in sub_courses:
         modules = sub_course.modules.all().order_by("order")
@@ -123,4 +99,58 @@ def sub_course_learn(request, course_pk, course_name, sub_module_pk):
 
             context['sub_courses'][sub_course]['modules'][module] = sub_modules
 
-    return render(request, 'course_operations/sub_course_learn.html', context)
+
+@login_required
+@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
+def learning_view(request, course_pk, course_name, sub_module_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    if course_name != course.url():
+        raise Http404("Incorrect course name!")
+    
+    sub_module = get_object_or_404(Sub_Module, pk=sub_module_pk)
+
+    context = {
+        "course" : course,
+        "sub_module" : sub_module,
+        "sub_courses" : {}
+    }
+
+    query_all_sub_courses(course, context)
+
+    return render(request, 'course_operations/main_view.html', context)
+
+
+@login_required
+@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
+def short_link_quiz(request, course_pk, quiz_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    course_name = course.url()
+    
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
+
+    return redirect(reverse('course:quiz_preview', kwargs={'course_pk': course_pk, 'course_name': course_name, 'quiz_pk': quiz_pk}))
+
+
+@login_required
+@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
+def quiz_preview(request, course_pk, course_name, quiz_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    if course_name != course.url():
+        raise Http404("Incorrect course name!")
+    
+    course = get_object_or_404(Course, pk=course_pk)
+    course_name = course.url()
+    
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
+    sub_course_pk = quiz.sub_course.id
+
+    context = {
+        "course" : course,
+        "sub_course_pk" : sub_course_pk,
+        "quiz": quiz,
+        "sub_courses" : {},
+    }
+
+    query_all_sub_courses(course, context)
+
+    return render(request, 'course_operations/main_view.html', context)

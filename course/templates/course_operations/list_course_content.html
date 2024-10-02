@@ -1,0 +1,8 @@
+{% for sub_course, modules_and_quizzes in sub_courses.items %}
+<div class="my-5">
+    <h5>{{ sub_course }}</h5>
+    <hr>
+        {% include "course_operations/module_collapse.html" %}
+        {% include "course_operations/quiz_collapse.html" %}
+</div>
+{% endfor %}

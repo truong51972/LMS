@@ -1,5 +1,5 @@
 from django import forms
-from .models import Course, Quiz, Question, Answer_Option, Sub_Course, Module, Sub_Module
+from .models import *
 
 class Course_Form(forms.ModelForm):
     class Meta:
@@ -39,4 +39,15 @@ class Module_Form(forms.ModelForm):
 class Sub_Module_Form(forms.ModelForm):
     class Meta:
         model = Sub_Module
-        fields = ['title', 'content_html_list', 'image_list', 'video_url']
+        fields = ['title', 'video_url', 'html_content']
+
+        widgets = {
+            'video_url': forms.Textarea(attrs={'rows': 1}),
+            'html_content': forms.Textarea(attrs={'rows': 20}),
+        }
+
+
+class Image_Form(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ['image']
