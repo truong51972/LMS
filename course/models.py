@@ -120,6 +120,7 @@ class Quiz(models.Model):
     quiz_title = models.CharField(max_length=255)
     quiz_description = models.TextField(blank=True, null=True, max_length=500)
     total_mark = models.IntegerField()
+    mark_to_pass = models.IntegerField()
     order = models.IntegerField()
 
     created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="quiz_created")

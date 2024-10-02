@@ -4,12 +4,19 @@
 {% block content %}
 <div class="container mt-4">
     <h3 class="mb-4">Quiz Information</h3>
-    <p><strong>Title</strong>: {{ quiz.quiz_title }}</p>
-    <p><strong>Description</strong>: {{ quiz.quiz_description }}</p>
-    <p><strong>Total Mark</strong>: {{ quiz.total_mark }}</p>
-    <p><strong>Created by</strong>: {{ quiz.created_by.full_name }}</p>
-    <p><strong>Created At</strong>: {{ quiz.created_at }}</p>
-    <p><strong>Updated at</strong>: {{ quiz.updated_at }}</p>
+    <div class="row">
+        <div class="col">
+            <p><strong>Title: </strong>{{ quiz.quiz_title }}</p>
+            <p><strong>Description: </strong>{{ quiz.quiz_description }}</p>
+            <p><strong>Total Mark: </strong>{{ quiz.total_mark }}</p>
+            <p><strong>Mark To Pass</strong>: {{ quiz.mark_to_pass }}</p>
+        </div>
+        <div class="col">
+            <p><strong>Created by: </strong>{{ quiz.created_by.full_name }}</p>
+            <p><strong>Created At: </strong>{{ quiz.created_at }}</p>
+            <p><strong>Updated at: </strong>{{ quiz.updated_at }}</p>
+        </div>
+    </div>
     <a href="{% url 'course:quiz_edit' course.pk sub_course.pk quiz.pk%}" style="width: 5rem;"
         class="btn btn-primary">Edit</a>
     <table class="table table-hover">

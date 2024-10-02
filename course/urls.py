@@ -7,6 +7,7 @@ from .views import quiz_management
 from .views import question_management
 from .views import answer_management
 from .views import course_operations
+from .views import quiz_operations
 from .views import image_management
 
 
@@ -67,6 +68,6 @@ urlpatterns = [
     path('<int:course_pk>/learn/<int:sub_module_pk>/', course_operations.short_link_learning_view, name='short_link_learning_view'),
     path('<int:course_pk>/<str:course_name>/learn/<int:sub_module_pk>', course_operations.learning_view, name='learning_view'),
 
-    path('<int:course_pk>/quiz/<int:quiz_pk>/', course_operations.short_link_quiz, name='short_link_quiz'),
-    path('<int:course_pk>/<str:course_name>/quiz_preview/<int:quiz_pk>', course_operations.quiz_preview, name='quiz_preview'),
+    path('<int:course_pk>/quiz/<int:quiz_pk>/', quiz_operations.short_link_quiz, name='short_link_quiz'),
+    path('<int:course_pk>/<str:course_name>/quiz_preview/<int:quiz_pk>', quiz_operations.quiz_preview, name='quiz_preview'),
 ]

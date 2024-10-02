@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ course.course_name }}-{{ title }}{% endblock %}
+{% block title %}{{ course.course_name }} - {{ sub_course.title }}{{ quiz.quiz_title }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
     <div class="row" style="height: 90vh;">
         <main role="main" class="col-md-9 ml-sm-auto col-lg-9 px-4 d-flex flex-column" style="height: 90vh;">
-            <div class="flex-grow-1 overflow-auto">
+            <div class="flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
                 <div class="vh-100">
                     {% if quiz %}
                     {% include "course_operations/quiz_preview.html" %}

@@ -1,7 +1,6 @@
 """
     For student activity: enroll, learn, quiz, ...
 """
-import ast
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -11,8 +10,10 @@ from module_group.models import ModuleGroup
 
 from ..models import Course, Quiz, Question, Answer_Option, Enrolled_course, Module, Sub_Course, Sub_Module
 
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import login_required
 from main.utils.block import custom_user_passes_test, block_unenrolled_student
+
+from .utils import query_all_sub_courses
 
 def short_link_course(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
@@ -83,23 +84,6 @@ def short_link_learning_view(request, course_pk, sub_module_pk):
     return redirect(reverse('course:learning_view', kwargs={'course_pk': course_pk, 'course_name': course_name, 'sub_module_pk': sub_module_pk}))
 
 
-def query_all_sub_courses(course, context:dict):
-    sub_courses = course.sub_courses.all()
-    for sub_course in sub_courses:
-        modules = sub_course.modules.all().order_by("order")
-        quizzes = sub_course.quizzes.all().order_by("order")
-        
-        context['sub_courses'][sub_course] = {
-            'modules': {},
-            'quizzes': quizzes,
-        }
-
-        for module in modules:
-            sub_modules = module.sub_modules.all().order_by("order")
-
-            context['sub_courses'][sub_course]['modules'][module] = sub_modules
-
-
 @login_required
 @custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
 def learning_view(request, course_pk, course_name, sub_module_pk):
@@ -113,42 +97,6 @@ def learning_view(request, course_pk, course_name, sub_module_pk):
         "course" : course,
         "sub_module" : sub_module,
         "sub_courses" : {}
-    }
-
-    query_all_sub_courses(course, context)
-
-    return render(request, 'course_operations/main_view.html', context)
-
-
-@login_required
-@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
-def short_link_quiz(request, course_pk, quiz_pk):
-    course = get_object_or_404(Course, pk=course_pk)
-    course_name = course.url()
-    
-    quiz = get_object_or_404(Quiz, pk=quiz_pk)
-
-    return redirect(reverse('course:quiz_preview', kwargs={'course_pk': course_pk, 'course_name': course_name, 'quiz_pk': quiz_pk}))
-
-
-@login_required
-@custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
-def quiz_preview(request, course_pk, course_name, quiz_pk):
-    course = get_object_or_404(Course, pk=course_pk)
-    if course_name != course.url():
-        raise Http404("Incorrect course name!")
-    
-    course = get_object_or_404(Course, pk=course_pk)
-    course_name = course.url()
-    
-    quiz = get_object_or_404(Quiz, pk=quiz_pk)
-    sub_course_pk = quiz.sub_course.id
-
-    context = {
-        "course" : course,
-        "sub_course_pk" : sub_course_pk,
-        "quiz": quiz,
-        "sub_courses" : {},
     }
 
     query_all_sub_courses(course, context)
