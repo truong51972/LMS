@@ -1,4 +1,4 @@
-<div class="w-75 mx-auto">
+<div class="w-75 mx-auto pb-4">
     <h3 class="mb-4">Quiz Information</h3>
     <div class="row">
         <div class="col">
@@ -15,27 +15,26 @@
         </div>
     </div>
     <hr>
-    <a href="" class="btn btn-primary px-3 py-2">Start Assignment</a>
+    <a href="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</a>
     <h5 class="mt-4">Your Attempt</h5>
-    <table class="table w-75">
+    <table class="table" style="width: 60%;">
         <thead>
           <tr>
             <th class="col-1">#</th>
-            <th class="col-8">Date</th>
+            <th class="col-7">Date</th>
             <th class="col-3">Mark</th>
+            <th class="col-1"></th>
           </tr>
         </thead>
         <tbody>
-          <tr class="bg-success">
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-          </tr>
-          <tr class="bg-danger">
-            <th scope="row">2</th>
-            <td>Mark</td>
-            <td>Otto</td>
-          </tr>
+          {% for attempt in attempts %}
+            <tr>
+              <th scope="row" style="justify-content: center;">{{ forloop.counter }}</th>
+              <td>{{ attempt.attempt_date }}</td>
+              <td class="{% if attempt.score >= quiz.mark_to_pass %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score }}</td>
+              <td><a href="{% url "course:short_link_attempted_quiz_preview" course.pk quiz.pk attempt.pk %}" >View</a></td>
+            </tr>
+          {% endfor %}
         </tbody>
       </table>
 </div>

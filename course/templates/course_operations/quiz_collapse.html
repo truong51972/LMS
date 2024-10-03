@@ -4,16 +4,16 @@
     <div class="card-header" id="quiz_heading_{{ sub_course.pk }}">
       <h2 class="mb-0">
         <button
-          class="btn btn-link btn-block text-left {% if sub_course_pk %}{% if sub_course.pk == sub_course_pk %}collapsed{% endif %}{% endif %}"
+          class="btn btn-link btn-block text-left {% if quiz.sub_course.id %}{% if sub_course.pk == quiz.sub_course.id %}collapsed{% endif %}{% endif %}"
           type="button" data-toggle="collapse" data-target="#quiz_collapse_{{ sub_course.pk }}"
-          aria-expanded="{% if sub_course_pk %}{% if sub_course.pk == sub_course_pk %}true{% else %}false{% endif %}{% endif %}"
+          aria-expanded="{% if quiz.sub_course.id %}{% if sub_course.pk == quiz.sub_course.id %}true{% else %}false{% endif %}{% endif %}"
           aria-controls="quiz_collapse_{{ sub_course.pk }}">
           Quizzes
         </button>
       </h2>
     </div>
     <div id="quiz_collapse_{{ sub_course.pk }}"
-      class="collapse {% if sub_course_pk %}{% if sub_course.pk == sub_course_pk %}show{% endif %}{% endif %}"
+      class="collapse {% if quiz.sub_course.id %}{% if sub_course.pk == quiz.sub_course.id %}show{% endif %}{% endif %}"
       aria-labelledby="quiz_heading_{{ sub_course.pk }}" data-parent="#accordion_quiz">
       <div class="card-body">
         <table class="table table-hover">
@@ -26,7 +26,7 @@
             {% for quiz_looping in modules_and_quizzes.quizzes %}
             <tr>
               <td class="{% if quiz.pk %}{% if quiz.pk == quiz_looping.pk %}table-active{% endif %}{% endif %}" id="quiz_{{quiz_looping.id}}">
-                <a href="{% url "course:short_link_quiz" course.pk quiz_looping.pk %}">
+                <a href="{% url "course:short_link_quiz_preview" course.pk quiz_looping.pk %}">
                   {{ quiz_looping.order }}) {{ quiz_looping.quiz_title}}
                 </a>
               </td>

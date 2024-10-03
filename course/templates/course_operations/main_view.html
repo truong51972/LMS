@@ -8,10 +8,14 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-9 px-4 d-flex flex-column" style="height: 90vh;">
             <div class="flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
                 <div class="vh-100">
-                    {% if quiz %}
-                    {% include "course_operations/quiz_preview.html" %}
+                    {% if type %}
+                        {% if type == "preview" %}
+                            {% include "course_operations/quiz_preview.html" %}
+                        {% elif type == "do" %}
+                        {% include "course_operations/do_preview_quiz.html" %}
+                        {% endif %}
                     {% else %}
-                    {% include "course_operations/learning_view.html" %}
+                        {% include "course_operations/learning_view.html" %}
                     {% endif %}
                 </div>
             </div>

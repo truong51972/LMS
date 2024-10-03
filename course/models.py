@@ -140,7 +140,6 @@ class Question(models.Model):
     question_type = models.CharField(max_length=50)
     points = models.IntegerField()
 
-
     quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, related_name="questions")
 
 
@@ -152,10 +151,11 @@ class Answer_Option(models.Model):
 
 
 class Student_Quiz_Attempt(models.Model):
-    score = models.IntegerField(default=0)
-    attempt_date = models.DateTimeField(auto_now_add=True)
+    score = models.FloatField(default=0)
     is_proctored = models.BooleanField(default=False)
-    proctoring_data = models.JSONField()
+    proctoring_data = models.JSONField(null=True)
+
+    attempt_date = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='attempted_quiz')
     quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, related_name='attempted_student')
