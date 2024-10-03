@@ -5,6 +5,7 @@ import re
 import os
 import shutil
 import random
+import json
 from PIL import Image
 import pandas as pd
 
@@ -128,68 +129,73 @@ def upload_existed_course(request):
         return re.match(url_pattern, url) is not None
 
     if request.method == "POST":
-        csv_file = request.FILES['csv_file']
-        if not csv_file.name.endswith('.csv'):
-            messages.error(request, 'File không phải là định dạng CSV.')
-            return redirect('course:upload_existed_course')
-        lorem_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla ultricies laoreet. Donec lacinia blandit purus ut ultricies. Fusce quis consequat risus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas."
+        json_data = request.FILES['json_data']
 
-        df = pd.read_csv(csv_file)
+        json_data = json.load(json_data)
+        print(json_data)
 
-        image_file_path = f"images/default_image_{random.randint(0,10000000)}.jpg"
-
-        course = None
-
-        for index, row in df.iterrows():
-            course_name = row.iloc[0]
-            sub_course_title = row.iloc[1]
-            module_title = row.iloc[2]
-            sub_module_title = row.iloc[3]
-            content_html_list = row.iloc[4]
-            image_list = row.iloc[5]
-
-            video_url = row.iloc[6]
-            if not is_valid_url(video_url):
-                video_url = ""
-            
-            if course is None:
-                course = Course.objects.create(
-                    course_name= course_name,
-                    image= image_file_path,
-                    description= lorem_text
+        for course_name, course_items in json_data.items():
+            image_file_path = f"images/default_image_{random.randint(0,10000000)}.jpg"
+            course = Course.objects.create(
+                course_name= course_name,
+                image= image_file_path,
+                description= course_items['description']
+            )
+            for sub_course_title, sub_course_items in course_items['sub_courses'].items():
+                order = len(course.sub_courses.all()) + 1
+                sub_course, _ = Sub_Course.objects.get_or_create(
+                    title= sub_course_title,
+                    course= course,
+                    defaults= {
+                        "order": order
+                    }
                 )
-
-            order = len(course.sub_courses.all()) + 1
-            sub_course, _ = Sub_Course.objects.get_or_create(
-                title= sub_course_title,
-                course= course,
-                defaults= {
-                    "order": order
-                }
-            )
-
-            order = len(sub_course.modules.all()) + 1
-            module, _ = Module.objects.get_or_create(
-                title= module_title,
-                sub_course= sub_course,
-                defaults= {
-                    "order": order,
-                    "created_by": request.user
-                }
-            )
-            
-            order = len(module.sub_modules.all()) + 1
-            sub_module, _ = Sub_Module.objects.get_or_create(
-                title= sub_module_title,
-                module= module,
-                defaults={
-                    "order": order,
-                    "content_html_list": str(content_html_list),
-                    "image_list": image_list,
-                    "video_url": video_url
-                }
-            )
-
+                for module_title, module_items in sub_course_items['modules'].items():
+                    order = len(sub_course.modules.all()) + 1
+                    module, _ = Module.objects.get_or_create(
+                        title= module_title,
+                        sub_course= sub_course,
+                        defaults= {
+                            "order": order,
+                            "created_by": request.user
+                        }
+                    )
+                    for sub_module_title, sub_module_items in module_items.items():          
+                        order = len(module.sub_modules.all()) + 1
+                        sub_module, _ = Sub_Module.objects.get_or_create(
+                            title= sub_module_title,
+                            module= module,
+                            defaults={
+                                "order": order,
+                                "video_url": sub_module_items['video_url'],
+                                "html_content": sub_module_items['html_content'],
+                            }
+                        )
+                order = 0
+                for quiz_title, quiz_items in sub_course_items['quizzes'].items():
+                    order += 1
+                    quiz = Quiz.objects.create(
+                        quiz_title = quiz_title,
+                        quiz_description = quiz_items['description'],
+                        total_mark = quiz_items['total_mark'],
+                        mark_to_pass = quiz_items['mark_to_pass'],
+                        order = order,
+                        created_by = request.user,
+                        sub_course = sub_course
+                    )
+                    for question_text, question_items in quiz_items['questions'].items():
+                        question = Question.objects.create(
+                            question_text = question_text,
+                            question_type = question_items['type'],
+                            points = question_items['point'],
+                            quiz = quiz
+                        )
+                        for option_text, is_correct in question_items['answers'].items():
+                            answer = Answer_Option.objects.create(
+                                option_text = option_text,
+                                is_correct = True if is_correct == 'true' else False,
+                                question = question,
+                            )
         return redirect('course:course_list')
     
     return render(request, 'upload_existed_course_form.html')

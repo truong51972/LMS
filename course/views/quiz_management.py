@@ -46,7 +46,15 @@ def quiz_delete(request, course_pk, sub_course_pk, quiz_pk):
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
 
     if request.method == 'POST':
+        order = quiz.order
         quiz.delete()
+        
+        quizzes = sub_course.quizzes.all().order_by("order")
+        for quiz in quizzes:
+            if quiz.order > order:
+                quiz.order -= 1
+                quiz.save()
+
         return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
     
     context = {
