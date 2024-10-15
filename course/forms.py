@@ -10,7 +10,7 @@ class Course_Form(forms.ModelForm):
 class Quiz_Form(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ['quiz_title', 'quiz_description', 'total_mark', 'mark_to_pass']
+        fields = ['quiz_title', 'quiz_description', 'total_mark', 'mark_to_pass', 'time_limit']
 
 
 class Question_Form(forms.ModelForm):

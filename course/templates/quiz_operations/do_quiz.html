@@ -1,5 +1,7 @@
 <div class="w-75 mx-auto">
     <h2 class="text-center">{{ quiz.quiz_title }}</h2>
+    <div id="time_limit" value="{{ quiz.time_limit }}">Time Limit: {{ quiz.time_limit }}'</div>
+    <div id="timer">Time Left: 00:00:00</div>
     <form action="" method="post" id="answers_form">
         {% csrf_token %}
         {% for question, answer_options in questions.items %}
@@ -37,7 +39,7 @@
         {% if correct_answer_options_id %}
         <a href="{% url "course:short_link_quiz_preview" course.pk quiz.pk %}" class="btn btn-secondary mt-4">Back</a>
         {% else %}
-        <button id="submit" type="submit" class="btn btn-primary mt-4">Submit Assignment</button>
+        <button id="submit_btn" type="submit" class="btn btn-primary mt-4">Submit Assignment</button>
         {% endif %}
     </form>
 </div>
