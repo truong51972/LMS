@@ -1,3 +1,5 @@
+from django.core.cache import cache
+
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -54,7 +56,6 @@ def quiz_preview(request, course_pk, course_name, quiz_pk):
 
     context = {
         "course" : course,
-        "type" : "preview",
         "num_of_questions" : num_of_questions,
         "quiz": quiz,
         "attempts": attempts,
@@ -62,7 +63,7 @@ def quiz_preview(request, course_pk, course_name, quiz_pk):
     }
     query_all_sub_courses(course, context)
 
-    return render(request, 'course_operations/main_view.html', context)
+    return render(request, 'quiz_operations/quiz_preview_view.html', context)
 
 
 @login_required
@@ -71,14 +72,22 @@ def short_link_do_quiz(request, course_pk, quiz_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
     
+
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
+    
+    student_quiz_attempt = Student_Quiz_Attempt.objects.create(
+        user = request.user,
+        quiz = quiz
+    )
+    cache.set(f'{request.user.id}_{course_pk}_{quiz_pk}', student_quiz_attempt.id)
 
     reverse_link = reverse(
         'course:do_quiz',
         kwargs = {
             'course_pk': course_pk,
             'course_name': course_name,
-            'quiz_pk': quiz_pk
+            'quiz_pk': quiz_pk,
+            'attempt_pk': student_quiz_attempt.id,
         }
     )
     return redirect(reverse_link)
@@ -86,7 +95,7 @@ def short_link_do_quiz(request, course_pk, quiz_pk):
 
 @login_required
 @custom_user_passes_test(block_unenrolled_student, "course:short_link_course", ["course_pk"])
-def do_quiz(request, course_pk, course_name, quiz_pk):
+def do_quiz(request, course_pk, course_name, quiz_pk, attempt_pk):
     course = get_object_or_404(Course, pk=course_pk)
     if course_name != course.url():
         raise Http404("Incorrect course name!")
@@ -95,12 +104,25 @@ def do_quiz(request, course_pk, course_name, quiz_pk):
     course_name = course.url()
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
 
+    attempt_id = cache.get(f'{request.user.id}_{course_pk}_{quiz_pk}')
+
+    reverse_link = reverse(
+        'course:short_link_quiz_preview',
+        kwargs = {
+            'course_pk': course_pk,
+            'quiz_pk': quiz_pk
+        }
+    )
+
+    if (attempt_id is None) or (attempt_id != attempt_pk):
+        return redirect(reverse_link)
+    else:
+        student_quiz_attempt = get_object_or_404(Student_Quiz_Attempt, pk=attempt_id)
+
     if request.method == "POST":
+        cache.delete(f'{request.user.id}_{course_pk}_{quiz_pk}')
         total_mark = 0
-        student_quiz_attempt = Student_Quiz_Attempt.objects.create(
-            user = request.user,
-            quiz = quiz
-        )
+
         for question in quiz.questions.all():
             question_point = question.points
             answer_options = request.POST.getlist(f"answer_option_{question.id}")
@@ -131,13 +153,6 @@ def do_quiz(request, course_pk, course_name, quiz_pk):
         student_quiz_attempt.score = round(total_mark, 2)
         student_quiz_attempt.save()
 
-        reverse_link = reverse(
-            'course:short_link_quiz_preview',
-            kwargs = {
-                'course_pk': course_pk,
-                'quiz_pk': quiz_pk
-            }
-        )
         return redirect(reverse_link)
     else:
         questions = {}
@@ -146,14 +161,14 @@ def do_quiz(request, course_pk, course_name, quiz_pk):
 
         context = {
             "course" : course,
-            "type" : "do",
             "quiz": quiz,
+            "attempt_id" : attempt_id,
             "questions": questions,
             "sub_courses" : {},
         }
         query_all_sub_courses(course, context)
 
-        return render(request, 'course_operations/main_view.html', context)
+        return render(request, 'quiz_operations/do_quiz_view.html', context)
 
 
 @login_required
@@ -204,7 +219,6 @@ def attempted_quiz_preview(request, course_pk, course_name, quiz_pk, attempt_pk)
                 
     context = {
         "course" : course,
-        "type" : "do",
         "quiz": quiz,
         "questions": questions,
         "correct_answer_options_id": correct_answer_options_id,
@@ -214,4 +228,4 @@ def attempted_quiz_preview(request, course_pk, course_name, quiz_pk, attempt_pk)
     }
     query_all_sub_courses(course, context)
 
-    return render(request, 'course_operations/main_view.html', context)
+    return render(request, 'quiz_operations/attempted_quiz_view.html', context)

@@ -9,9 +9,7 @@ from .views import answer_management
 from .views import course_operations
 from .views import quiz_operations
 from .views import image_management
-
-
-
+from .views import logger
 app_name = 'course'
 
 urlpatterns = [
@@ -72,8 +70,10 @@ urlpatterns = [
     path('<int:course_pk>/<str:course_name>/quiz_preview/<int:quiz_pk>',quiz_operations.quiz_preview,name='quiz_preview'),
 
     path('<int:course_pk>/do_quiz/<int:quiz_pk>/',quiz_operations.short_link_do_quiz,name='short_link_do_quiz'),
-    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>',quiz_operations.do_quiz,name='do_quiz'),
+    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>/attempt/<int:attempt_pk>/',quiz_operations.do_quiz,name='do_quiz'),
 
     path('<int:course_pk>/quiz/<int:quiz_pk>/preview/<int:attempt_pk>',quiz_operations.short_link_attempted_quiz_preview,name='short_link_attempted_quiz_preview'),
     path('<int:course_pk>/<str:course_name>/quiz/<int:quiz_pk>/preview/<int:attempt_pk>',quiz_operations.attempted_quiz_preview,name='attempted_quiz_preview'),
+
+    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>/attempt/<int:attempt_pk>/tab_behavior_logger/', logger.tab_behavior_logger, name="tab_behavior_logger")
 ]

@@ -1,6 +1,6 @@
 <div class="w-75 mx-auto">
     <h2 class="text-center">{{ quiz.quiz_title }}</h2>
-    <form action="" method="post">
+    <form action="" method="post" id="answers_form">
         {% csrf_token %}
         {% for question, answer_options in questions.items %}
         <div class="my-4">
@@ -37,7 +37,7 @@
         {% if correct_answer_options_id %}
         <a href="{% url "course:short_link_quiz_preview" course.pk quiz.pk %}" class="btn btn-secondary mt-4">Back</a>
         {% else %}
-        <button type="submit" class="btn btn-primary mt-4">Submit Assignment</button>
+        <button id="submit" type="submit" class="btn btn-primary mt-4">Submit Assignment</button>
         {% endif %}
     </form>
 </div>

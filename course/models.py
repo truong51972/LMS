@@ -153,7 +153,7 @@ class Answer_Option(models.Model):
 class Student_Quiz_Attempt(models.Model):
     score = models.FloatField(default=0)
     is_proctored = models.BooleanField(default=False)
-    proctoring_data = models.JSONField(null=True)
+    proctoring_data = models.JSONField(null=True, default=dict)
 
     attempt_date = models.DateTimeField(auto_now_add=True)
 

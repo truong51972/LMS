@@ -1,9 +1,9 @@
 {% extends "main_course_view.html" %}
 
-{% block title %}{{ course.course_name }} - {{ sub_module.title }}{% endblock %}
+{% block title %}{{ course.course_name }} - {{ quiz.quiz_title }}{% endblock %}
 
 {% block left_content %}
-    {% include "course_operations/learning_view.html" %}
+    {% include "quiz_operations/quiz_preview.html" %}
 {% endblock left_content %}
 
 {% block right_content %}
@@ -12,9 +12,6 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('sub_module_{{sub_module.pk}}').scrollIntoView({ behavior: 'smooth' });
-    });
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('quiz_{{quiz.pk}}').scrollIntoView({ behavior: 'smooth' });
     });
