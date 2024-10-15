@@ -164,6 +164,7 @@ def do_quiz(request, course_pk, course_name, quiz_pk, attempt_pk):
             "quiz": quiz,
             "attempt_id" : attempt_id,
             "questions": questions,
+            "student_quiz_attempt" : student_quiz_attempt,
             "sub_courses" : {},
         }
         query_all_sub_courses(course, context)

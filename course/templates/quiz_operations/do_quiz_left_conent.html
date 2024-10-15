@@ -1,7 +1,5 @@
 <div class="w-75 mx-auto">
     <h2 class="text-center">{{ quiz.quiz_title }}</h2>
-    <div id="time_limit" value="{{ quiz.time_limit }}">Time Limit: {{ quiz.time_limit }}'</div>
-    <div id="timer">Time Left: 00:00:00</div>
     <form action="" method="post" id="answers_form">
         {% csrf_token %}
         {% for question, answer_options in questions.items %}

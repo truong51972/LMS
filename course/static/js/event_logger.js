@@ -22,21 +22,21 @@ function log_tab_behavior(time, behave){
 
 
 window.addEventListener('blur', () => {
-    time = new Date();
+    time = Date.now();
     console.log('Tab đã bị chuyển đi - ' + time);
     log_tab_behavior(time=time, behave="blur")
 });
 
 
 window.addEventListener('focus', () => {
-    time = new Date();
+    time = Date.now();
     console.log('Tab đã được quay lại - ' + time);
     log_tab_behavior(time=time, behave="focus")
 });
 
 
 function startTimer(duration, display) {
-    var start = Date.now(),
+    var start = new Date(document.querySelector("#time_start").getAttribute("time_start")).getTime(),
         diff,
         hours,
         minutes,
