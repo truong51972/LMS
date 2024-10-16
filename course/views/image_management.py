@@ -17,7 +17,6 @@ from main.utils.block import block_student
 def image_list(request, course_pk):
     course = get_object_or_404(Course, pk=course_pk)
     images = course.images.all()
-    print(images)
     module_groups = ModuleGroup.objects.all()
 
     context = {

@@ -19,8 +19,8 @@
         <td>{{ forloop.counter }}</td>
         <td><img src="{{image.image.url}}" alt="" class="img-thumbnail" style="width: 60%;"></td>
         <td>
-          <input type="text" value="{{image.image.url}}" id="image_link_{{ image.image.pk }}" disabled>
-          <button onclick="copyLink('image_link_{{ image.image.pk }}')">Copy Link</button>
+          <input type="text" value="{{image.image.url}}" id="image_link_{{ image.pk }}" disabled>
+          <button onclick="copyLink('image_link_{{ image.pk }}')">Copy Link</button>
           <br>
           <a href="{% url 'course:image_delete' course.pk image.pk %}" class="btn btn-danger">Delete</a>
         </td>
@@ -37,10 +37,16 @@
 <script>
   function copyLink(id) {
     var copyText = document.getElementById(id);
+
     copyText.select();
     copyText.setSelectionRange(0, 99999); // Cho mobile devices
-    document.execCommand("copy");
-    alert("Copied the link: " + copyText.value);
+
+    navigator.clipboard.writeText(copyText.value).then(function() {
+      alert("Copied the link: " + copyText.value);
+    }).catch(function(error) {
+        console.error('Error copying text: ', error);
+    });
+    
   }
 </script>
 {% endblock %}
