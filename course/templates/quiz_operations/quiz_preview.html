@@ -32,7 +32,7 @@
         <tbody>
           {% for attempt in attempts %}
             <tr>
-              <th scope="row" style="justify-content: center;">{{ forloop.counter }}</th>
+              <th scope="row" style="justify-content: center;">{{ forloop.revcounter }}</th>
               <td>{{ attempt.attempt_date }}</td>
               <td class="{% if attempt.score >= quiz.mark_to_pass %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score }}</td>
               <td><a href="{% url "course:short_link_attempted_quiz_preview" course.pk quiz.pk attempt.pk %}" >View</a></td>
