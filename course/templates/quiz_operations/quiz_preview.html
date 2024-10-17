@@ -18,7 +18,11 @@
       </div>
     </div>
     <hr>
-    <a href="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</a>
+    <div class="alert alert-warning" role="alert">
+      Install <a href="https://safeexambrowser.org/download_en.html" target="_blank">Safe Exam Browser</a> before starting assignment!
+    </div>
+    {% comment %} <a href="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</a> {% endcomment %}
+    <button id="start_assign_btn" sebLink="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</button>
     <h5 class="mt-4">Your Attempt</h5>
     <table class="table" style="width: 60%;">
         <thead>

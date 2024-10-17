@@ -1,4 +1,5 @@
 {% extends "main_course_view.html" %}
+{% load static %}
 
 {% block title %}{{ course.course_name }} - {{ quiz.quiz_title }}{% endblock %}
 
@@ -11,6 +12,7 @@
 {% endblock right_content %}
 
 {% block scripts %}
+<script src="{% static 'js/go_to_seb.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('quiz_{{quiz.pk}}').scrollIntoView({ behavior: 'smooth' });
