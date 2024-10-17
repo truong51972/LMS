@@ -181,3 +181,7 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+# config of AI server
+DDNS_API_SERVER = 'truong51972.ddns.net'
+PORT_API_SERVER = 8080
