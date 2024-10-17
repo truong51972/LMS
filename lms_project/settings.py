@@ -113,7 +113,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'truong51972$LMS_database',
             'USER': 'truong51972',
-            'PASSWORD': 'Anhyeuem51972@',
+            'PASSWORD': '@g$37t*57u7eymim46k+9)w',
             'HOST': 'truong51972.mysql.pythonanywhere-services.com',
             'PORT': '3306',
             'OPTIONS': {
