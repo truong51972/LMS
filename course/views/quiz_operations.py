@@ -72,15 +72,15 @@ def short_link_do_quiz(request, course_pk, quiz_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
     
-    if "SEB" not in request.META.get('HTTP_USER_AGENT', ''):
-        reverse_link = reverse(
-            'course:short_link_quiz_preview',
-            kwargs = {
-                'course_pk': course_pk,
-                'quiz_pk': quiz_pk
-            }
-        )
-        return redirect(reverse_link)
+    # if "SEB" not in request.META.get('HTTP_USER_AGENT', ''):
+    #     reverse_link = reverse(
+    #         'course:short_link_quiz_preview',
+    #         kwargs = {
+    #             'course_pk': course_pk,
+    #             'quiz_pk': quiz_pk
+    #         }
+    #     )
+    #     return redirect(reverse_link)
     
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
     
