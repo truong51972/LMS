@@ -186,6 +186,7 @@ CACHES = {
 DDNS_API_SERVER = 'truong51972.ddns.net'
 PORT_API_SERVER = 8080
 
+# forge to HTTPS protocol for secure
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000  # 1 năm
