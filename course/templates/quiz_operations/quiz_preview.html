@@ -14,22 +14,27 @@
           <p><strong>Total Mark: </strong>{{ quiz.total_mark }}</p>
           <p><strong>Mark To Pass</strong>: {{ quiz.mark_to_pass }}</p>
           <p><strong>Number of Questions: </strong>{{ num_of_questions }}</p>
-          <p><strong>Time Limit</strong>: {{ quiz.time_limit }}'</p>
+          <p><strong>Time Limit</strong>: <span class="time">{{ quiz.time_limit }}</span></p>
       </div>
     </div>
     <hr>
-    <div class="alert alert-warning" role="alert">
-      Install <a href="https://safeexambrowser.org/download_en.html" target="_blank">Safe Exam Browser</a> before starting assignment!
-    </div>
-    {% comment %} <a href="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</a> {% endcomment %}
-    <button id="start_assign_btn" sebLink="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</button>
+    {% if quiz.using_seb %}
+      <div class="alert alert-warning" role="alert">
+        Install <a href="https://safeexambrowser.org/download_en.html" target="_blank">Safe Exam Browser</a> before starting assignment!
+      </div>
+      <button id="start_assign_btn" sebLink="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Open Seb</button>
+    {% else %}
+      <a href="{% url "course:short_link_do_quiz" course.pk quiz.pk %}" class="btn btn-primary px-3 py-2">Start Assignment</a>
+    {% endif %}
+
     <h5 class="mt-4">Your Attempt</h5>
     <table class="table" style="width: 60%;">
         <thead>
           <tr>
             <th class="col-1">#</th>
             <th class="col-6">Date</th>
-            <th class="col-3">Mark</th>
+            <th class="col-1">Duration</th>
+            <th class="col-2">Mark</th>
             <th class="col-2"></th>
           </tr>
         </thead>
@@ -38,6 +43,7 @@
             <tr>
               <th scope="row" style="justify-content: center;">{{ forloop.revcounter }}</th>
               <td>{{ attempt.attempt_date }}</td>
+              <td><span class="time">{{ attempt.duration }}</span></td>
               <td class="{% if attempt.score >= quiz.mark_to_pass %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score }}</td>
               <td><a href="{% url "course:short_link_attempted_quiz_preview" course.pk quiz.pk attempt.pk %}" >View</a></td>
             </tr>

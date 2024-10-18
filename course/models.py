@@ -122,6 +122,8 @@ class Quiz(models.Model):
     total_mark = models.IntegerField()
     mark_to_pass = models.IntegerField()
     time_limit = models.IntegerField(null=True, default=0)
+    using_seb = models.BooleanField(default=False)
+
     order = models.IntegerField()
 
     created_by = models.ForeignKey(User, on_delete= models.SET_NULL, null=True, related_name="quiz_created")
@@ -155,7 +157,8 @@ class Student_Quiz_Attempt(models.Model):
     score = models.FloatField(default=0)
     is_proctored = models.BooleanField(default=False)
     proctoring_data = models.JSONField(null=True, default=dict)
-
+    duration = models.IntegerField(default=0)
+    
     attempt_date = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(User, on_delete= models.CASCADE, related_name='attempted_quiz')

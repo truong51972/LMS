@@ -8,6 +8,6 @@
     </div>
     <hr>
     <div id="time_start" time_start= "{{student_quiz_attempt.attempt_date|date:'Y-m-d H:i:s'}}"></div>
-    <div id="time_limit" value="{{ quiz.time_limit }}">Time Limit: {{ quiz.time_limit }}'</div>
+    <div id="time_limit" value="{{ quiz.time_limit }}">Time Limit: <span class='time'>{{ quiz.time_limit }}</span></div>
     <div id="timer">Time Left: 00:00:00</div>
 </div>

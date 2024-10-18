@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.cache import cache
 
 from django.http import Http404, HttpResponseRedirect
@@ -71,8 +73,9 @@ def quiz_preview(request, course_pk, course_name, quiz_pk):
 def short_link_do_quiz(request, course_pk, quiz_pk):
     course = get_object_or_404(Course, pk=course_pk)
     course_name = course.url()
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
     
-    if "SEB" not in request.META.get('HTTP_USER_AGENT', ''):
+    if quiz.using_seb and "SEB" not in request.META.get('HTTP_USER_AGENT', ''):
         reverse_link = reverse(
             'course:short_link_quiz_preview',
             kwargs = {
@@ -82,14 +85,12 @@ def short_link_do_quiz(request, course_pk, quiz_pk):
         )
         return redirect(reverse_link)
     
-    quiz = get_object_or_404(Quiz, pk=quiz_pk)
     
     student_quiz_attempt = Student_Quiz_Attempt.objects.create(
         user = request.user,
         quiz = quiz
     )
     cache.set(f'{request.user.id}_{course_pk}_{quiz_pk}', student_quiz_attempt.id)
-
     reverse_link = reverse(
         'course:do_quiz',
         kwargs = {
@@ -129,6 +130,8 @@ def do_quiz(request, course_pk, course_name, quiz_pk, attempt_pk):
         student_quiz_attempt = get_object_or_404(Student_Quiz_Attempt, pk=attempt_id)
 
     if request.method == "POST":
+        duration = round(datetime.datetime.now().timestamp() - student_quiz_attempt.attempt_date.timestamp())
+
         cache.delete(f'{request.user.id}_{course_pk}_{quiz_pk}')
         total_mark = 0
 
@@ -159,6 +162,7 @@ def do_quiz(request, course_pk, course_name, quiz_pk, attempt_pk):
 
             total_mark += final_score
 
+        student_quiz_attempt.duration = duration
         student_quiz_attempt.score = round(total_mark, 2)
         student_quiz_attempt.save()
 

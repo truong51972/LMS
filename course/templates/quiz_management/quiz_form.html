@@ -28,6 +28,10 @@
             {{ form.time_limit.label_tag }}
             {{ form.time_limit|add_class:"form-control" }}
         </div>
+        <div class="form-group">
+            {{ form.using_seb.label_tag }}
+            {{ form.using_seb|add_class:"form-control" }}
+        </div>
         <button type="submit" class="btn btn-primary">Save</button>
         
         {% if quiz_pk %}

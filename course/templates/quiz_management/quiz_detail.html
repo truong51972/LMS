@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Course Detail{% endblock %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-4">
@@ -10,12 +11,13 @@
             <p><strong>Description: </strong>{{ quiz.quiz_description }}</p>
             <p><strong>Total Mark: </strong>{{ quiz.total_mark }}</p>
             <p><strong>Mark To Pass</strong>: {{ quiz.mark_to_pass }}</p>
-            <p><strong>Time Limit</strong>: {{ quiz.time_limit }}'</p>
+            <p><strong>Time Limit</strong>: <span class="time">{{ quiz.time_limit }}</span></p>
         </div>
         <div class="col">
             <p><strong>Created by: </strong>{{ quiz.created_by.full_name }}</p>
             <p><strong>Created At: </strong>{{ quiz.created_at }}</p>
             <p><strong>Updated at: </strong>{{ quiz.updated_at }}</p>
+            <p><strong>Using SEB: </strong>{{ quiz.using_seb }}</p>
         </div>
     </div>
     <a href="{% url 'course:quiz_edit' course.pk sub_course.pk quiz.pk%}" style="width: 5rem;"
@@ -86,4 +88,5 @@
     <a href="{% url 'course:quiz_delete' course.pk sub_course.pk quiz.pk%}" class="btn btn-danger">Delete This
         Quiz!</a>
 </div>
+<script src="{% static 'js/time_converter.js' %}"></script>
 {% endblock %}
