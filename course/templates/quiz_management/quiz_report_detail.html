@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Course Detail{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <p><strong>Title: </strong>{{ quiz.quiz_title }}</p>
+            <p><strong>Description: </strong>{{ quiz.quiz_description }}</p>
+            <p><strong>Total Mark: </strong>{{ quiz.total_mark }}</p>
+            <p><strong>Mark To Pass</strong>: {{ quiz.mark_to_pass }}</p>
+        </div>
+        <div class="col">
+            <p><strong>Created by: </strong>{{ quiz.created_by.full_name }}</p>
+            <p><strong>Created At: </strong>{{ quiz.created_at }}</p>
+            <p><strong>Updated at: </strong>{{ quiz.updated_at }}</p>
+            <p><strong>Time Limit</strong>: <span class="time">{{ quiz.time_limit }}</span></p>
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-secondary" href="{% url 'course:sub_course_list' course.pk %}">Back</a>
+
+</div>
+<div class="container-fluid w-75 mt-5">
+    <div class="row">
+        <div class="col-4">
+            {% include "quiz_management/quiz_report_detail_left.html" %}
+        </div>
+        <div class="col-8">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="attempted_quiz_tab" data-toggle="pill"
+                        data-target="#attempted_quiz" type="button" role="tab" aria-controls="attempted_quiz"
+                        aria-selected="true">Attempted Quiz</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="proctoring-tab" data-toggle="pill" data-target="#proctoring"
+                        type="button" role="tab" aria-controls="proctoring" aria-selected="false">Proctoring</button>
+                </li>
+            </ul>
+            <div class="d-flex flex-column" style="height: 90vh;">
+                <div class="flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
+                    <div class="vh-100">
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="attempted_quiz" role="tabpanel"
+                                aria-labelledby="attempted_quiz_tab">
+                                {% include "quiz_management/quiz_report_detail_quiz.html" %}
+                            </div>
+                            <div class="tab-pane fade" id="proctoring" role="tabpanel" aria-labelledby="proctoring-tab">
+                                Proctoring
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/time_converter.js' %}"></script>
+<script>
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+    });    
+</script>
+{% endblock %}

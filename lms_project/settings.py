@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%9tkr6=2x0koih$(9^sggb-z)ub@g$37t*57u7eymim46k+9)w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['*']
@@ -107,6 +107,11 @@ if os.environ.get('USERNAME') == 'tranq':
             },
         }
     }
+    AI_API_SERVER = {
+        'HOST' : 'localhost',
+        'PORT' : '8080',
+        'IS_DDNS' : False
+    }
 else:
     DATABASES = {
         'default': {
@@ -121,7 +126,12 @@ else:
             },
         }
     }
-
+    AI_API_SERVER = {
+        'HOST' : 'truong51972.ddns.net',
+        'PORT' : '8080',
+        'IS_DDNS' : True
+    }
+    
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -181,10 +191,6 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
-
-# config of AI server
-DDNS_API_SERVER = 'truong51972.ddns.net'
-PORT_API_SERVER = 8080
 
 # forge to HTTPS protocol for secure
 SESSION_COOKIE_SECURE = True

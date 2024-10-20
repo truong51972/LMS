@@ -1,15 +1,21 @@
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.core.cache import cache
+from django.views.decorators.csrf import csrf_exempt
 
 from module_group.models import ModuleGroup
 
-from ..forms import Course_Form, Quiz_Form, Question_Form, Answer_Option_Form
-from ..models import Course, Quiz, Question, Answer_Option, Sub_Course
+from ..forms import *
+from ..models import *
+
+from user.models import User
 
 from django.contrib.auth.decorators import login_required, user_passes_test
 from main.utils.block import block_student
+
+import json
+import base64
 
 
 @login_required
@@ -184,3 +190,82 @@ def quiz_move_down(request, course_pk, sub_course_pk, quiz_pk):
         quiz_temp.order = quiz_num
         quiz_temp.save()
     return redirect(reverse('course:sub_course_list', kwargs={'course_pk': course_pk}))
+
+
+@login_required
+@user_passes_test(block_student)
+def quiz_report_list(request, course_pk, sub_course_pk, quiz_pk):
+    course = get_object_or_404(Course, pk=course_pk)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
+
+    module_groups = ModuleGroup.objects.all()
+
+    all_attempted = quiz.attempted_student.all()
+    
+    unique_user_ids = set([attempted.user.id for attempted in all_attempted])
+    last_attempt_per_user = {}
+
+    for user_id in unique_user_ids:
+        user = User.objects.get(id= user_id)
+        all_attempt = all_attempted.filter(user=user).order_by('-id')
+        last_attempt = all_attempt.first()
+        last_attempt_per_user[last_attempt] = {
+            'times' : len(all_attempt)
+        }
+
+    context = {
+        'module_groups' : module_groups,
+        "course" : course,
+        "sub_course" : sub_course,
+        "quiz" : quiz,
+        "last_attempt_per_user" : last_attempt_per_user,
+    }
+    
+    return render(request, 'quiz_management/quiz_report_list.html', context)
+
+
+@login_required
+@user_passes_test(block_student)
+@csrf_exempt
+def quiz_report_detail(request, course_pk, sub_course_pk, quiz_pk, user_pk, attempt_pk):
+    module_groups = ModuleGroup.objects.all()
+
+    course = get_object_or_404(Course, pk=course_pk)
+    sub_course = get_object_or_404(Sub_Course, pk=sub_course_pk)
+    quiz = get_object_or_404(Quiz, pk=quiz_pk)
+    user = get_object_or_404(User, pk=user_pk)
+    attempt = get_object_or_404(Student_Quiz_Attempt, pk=attempt_pk)
+
+    attempts = list(Student_Quiz_Attempt.objects.filter(
+        quiz = quiz,
+        user = request.user
+    ))
+    attempts.reverse()
+
+
+    selected_answers = attempt.answers_of_attempted_student.all()
+    selected_answers_id = [selected_answer.selected_option.id for selected_answer in selected_answers]
+
+    correct_answer_options_id = []
+
+    questions = {}
+    for question in quiz.questions.all():
+        questions[question] = question.answer_options.all()
+        for answer in question.answer_options.all():
+            if answer.is_correct:
+                correct_answer_options_id.append(answer.id)
+
+    context = {
+        'module_groups' : module_groups,
+        "course" : course,
+        "sub_course" : sub_course,
+        "quiz" : quiz,
+        "attempt" : attempt,
+        "questions": questions,
+        "correct_answer_options_id": correct_answer_options_id,
+        "selected_answers_id": selected_answers_id,
+        "attempts" : attempts,
+    }
+    
+    return render(request, 'quiz_management/quiz_report_detail.html', context)

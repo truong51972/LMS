@@ -48,6 +48,7 @@ navigator.mediaDevices.enumerateDevices()
         }
         startCameraWithID(buttons[0].value)
         buttonMenu.textContent = buttons[0].textContent
+        scanning();
     })
     .catch(error => {
         console.error("Error enumerating devices:", error);
@@ -55,7 +56,7 @@ navigator.mediaDevices.enumerateDevices()
 
 
 function scanning() {
-    if (!is_scanning) return;
+    // if (!is_scanning) return;
 
     const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
@@ -64,32 +65,32 @@ function scanning() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     const imageData = canvas.toDataURL("image/jpeg");
 
-    fetch("upload/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ image: imageData }),
-    }).then(response => response.json())
-        .then(data => {
-            const img = new Image();
-            img.src = `data:image/jpeg;base64,${data["image"]}`;
+    if (imageData.startsWith("data:image/jpeg")) {
+        fetch("face_detector/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ image: imageData }),
+        }).then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    } else {
+        console.error("Waiting for image!");
+    }
 
-            img.onload = () => {
-                const context = detectedImg.getContext('2d');
-                context.drawImage(img, 0, 0, detectedImg.width, detectedImg.height);
-            };
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    
 
     setTimeout(() => {
         requestAnimationFrame(scanning);
-    }, 200);
+    }, 500);
 }
 
-// scanning();
+
 // startCamera.addEventListener('click', () => {
 //     is_scanning = !is_scanning;
 //     if (is_scanning) {

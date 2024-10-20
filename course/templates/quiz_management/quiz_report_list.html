@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Course Detail{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col">
+            <p><strong>Title: </strong>{{ quiz.quiz_title }}</p>
+            <p><strong>Description: </strong>{{ quiz.quiz_description }}</p>
+            <p><strong>Total Mark: </strong>{{ quiz.total_mark }}</p>
+            <p><strong>Mark To Pass</strong>: {{ quiz.mark_to_pass }}</p>
+        </div>
+        <div class="col">
+            <p><strong>Created by: </strong>{{ quiz.created_by.full_name }}</p>
+            <p><strong>Created At: </strong>{{ quiz.created_at }}</p>
+            <p><strong>Updated at: </strong>{{ quiz.updated_at }}</p>
+            <p><strong>Time Limit</strong>: <span class="time">{{ quiz.time_limit }}</span></p>
+        </div>
+    </div>
+    <h5 class="mt-4">Student Attempt</h5>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th class="col-1">#</th>
+                <th class="col-1">User ID</th>
+                <th class="col-2">User Name</th>
+                <th class="col-3">Date</th>
+                <th class="col-1">Times</th>
+                <th class="col-1">Duration</th>
+                <th class="col-1">Mark</th>
+                <th class="col-2"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt, dict_data in last_attempt_per_user.items %}
+            <tr>
+                <th scope="row" style="justify-content: center;">{{ forloop.counter }}</th>
+                <td>{{ attempt.user.id }}</td>
+                <td>{{ attempt.user.full_name }}</td>
+                <td>{{ attempt.attempt_date }}</td>
+                <td>{{ dict_data.times }}</td>
+                <td><span class="time">{{ attempt.duration }}</span></td>
+                <td class="{% if attempt.score >= quiz.mark_to_pass %}bg-success{% else %}bg-danger{% endif %}">
+                    {{attempt.score }}
+                </td>
+                <td>
+                    <a href="{% url 'course:quiz_report_detail' course.pk sub_course.pk quiz.pk attempt.user.id attempt.id %}">
+                        Detail
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a class="btn btn-secondary" href="{% url 'course:sub_course_list' course.pk %}">Back</a>
+</div>
+<script src="{% static 'js/time_converter.js' %}"></script>
+{% endblock %}

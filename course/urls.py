@@ -9,6 +9,7 @@ from .views import answer_management
 from .views import course_operations
 from .views import quiz_operations
 from .views import image_management
+
 from .views import logger
 app_name = 'course'
 
@@ -48,6 +49,8 @@ urlpatterns = [
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/delete/',quiz_management.quiz_delete,name='quiz_delete'),
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/move_up/',quiz_management.quiz_move_up,name='quiz_move_up'),
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/move_down/',quiz_management.quiz_move_down,name='quiz_move_down'),
+    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_list/',quiz_management.quiz_report_list,name='quiz_report_list'),
+    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_user/<int:user_pk>/attempt/<int:attempt_pk>/',quiz_management.quiz_report_detail,name='quiz_report_detail'),
 
 
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/question/add',question_management.question_add,name='question_add'),
@@ -75,5 +78,6 @@ urlpatterns = [
     path('<int:course_pk>/quiz/<int:quiz_pk>/preview/<int:attempt_pk>',quiz_operations.short_link_attempted_quiz_preview,name='short_link_attempted_quiz_preview'),
     path('<int:course_pk>/<str:course_name>/quiz/<int:quiz_pk>/preview/<int:attempt_pk>',quiz_operations.attempted_quiz_preview,name='attempted_quiz_preview'),
 
-    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>/attempt/<int:attempt_pk>/tab_behavior_logger/', logger.tab_behavior_logger, name="tab_behavior_logger")
+    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>/attempt/<int:attempt_pk>/tab_behavior_logger/', logger.tab_behavior_logger, name="tab_behavior_logger"),
+    path('<int:course_pk>/<str:course_name>/do_quiz/<int:quiz_pk>/attempt/<int:attempt_pk>/face_detector/', logger.face_detector, name="face_detector"),
 ]
