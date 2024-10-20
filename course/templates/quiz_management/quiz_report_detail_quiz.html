@@ -2,27 +2,28 @@
 <p><strong>Mark: </strong>{{ attempt.score }}</p>
 <p><strong>Duration: </strong><span class="time">{{ attempt.duration }}</span></p>
 <hr>
-{% for question, answer_options in questions.items %}
+{% for question_pk, question_data in questions.items %}
 <div class="my-4">
-    <strong>Question {{forloop.counter}}: </strong>{{ question.question_text }}
+    <strong>Question {{forloop.counter}}: </strong>{{ question_data.question_text }}
     <br>
-    <strong>Point: </strong>{{ question.points }}
+    <strong>Point: </strong>{{ question_data.points }}
     <div class="px-4">
         <strong>Answer Options</strong>
         <div class="ml-2">
-            {% for answer_option in answer_options %}
-            {% if correct_answer_options_id %}
-            {% if answer_option.id in correct_answer_options_id and answer_option.id in selected_answers_id%}
+            {% for answer_option_pk, answer_option_data in question_data.answer_options.items %}
+
+            {% if answer_option_data.is_selected and answer_option_data.is_correct %}
             <i class="fa-solid fa-square-check" style="color: green;"></i>
-            {% elif answer_option.id in selected_answers_id %}
+            {% elif answer_option_data.is_selected %}
             <i class="fa-solid fa-square-xmark" style="color: red;"></i>
             {% else %}
             <i class="fa-solid fa-border-none"></i>
             {% endif %}
-            {% endif %}
-            <input type="checkbox" name="answer_option_{{ question.id }}" value="{{answer_option.id}}"
-                style="height: 1rem; width: 1rem" disabled {% if answer_option.id in selected_answers_id %}checked{%endif%}>
-            {{answer_option.option_text}}
+
+            <input type="checkbox" name="answer_option_{{ question_pk }}" value="{{answer_option_pk}}"
+                style="height: 1rem; width: 1rem" disabled {% if answer_option_data.is_selected %}checked{%endif%}>
+
+            {{answer_option_data.option_text}}
             <br>
             {% endfor %}
         </div>
