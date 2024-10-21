@@ -19,26 +19,35 @@ def answer_add(request, course_pk, sub_course_pk, quiz_pk, question_pk):
     quiz = get_object_or_404(Quiz, pk=quiz_pk)
     question = get_object_or_404(Question, pk=question_pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = Answer_Option_Form(request.POST)
 
         form.instance.question = question
-        
+
         if form.is_valid():
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk': sub_course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(
+                reverse(
+                    "course:quiz_detail",
+                    kwargs={
+                        "course_pk": course_pk,
+                        "sub_course_pk": sub_course_pk,
+                        "quiz_pk": quiz_pk,
+                    },
+                )
+            )
     else:
         form = Answer_Option_Form()
 
     context = {
-        'form': form,
-        'course_pk' : course_pk,
-        'sub_course_pk' : sub_course_pk,
-        'quiz_pk' : quiz_pk,
+        "form": form,
+        "course_pk": course_pk,
+        "sub_course_pk": sub_course_pk,
+        "quiz_pk": quiz_pk,
     }
-    return render(request, 'answer_management/answer_form.html', context)
+    return render(request, "answer_management/answer_form.html", context)
 
 
 @login_required
@@ -50,24 +59,33 @@ def answer_edit(request, course_pk, sub_course_pk, quiz_pk, question_pk, answer_
     question = get_object_or_404(Question, pk=question_pk)
     answer = get_object_or_404(Answer_Option, pk=answer_pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = Answer_Option_Form(request.POST, instance=answer)
 
         if form.is_valid():
             form = form.save()
             Quiz.objects.get(pk=quiz_pk).save()
 
-            return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk': sub_course_pk, 'quiz_pk': quiz_pk}))
+            return redirect(
+                reverse(
+                    "course:quiz_detail",
+                    kwargs={
+                        "course_pk": course_pk,
+                        "sub_course_pk": sub_course_pk,
+                        "quiz_pk": quiz_pk,
+                    },
+                )
+            )
     else:
         form = Answer_Option_Form(instance=answer)
 
     context = {
-        'form': form,
-        'course_pk' : course_pk,
-        'sub_course_pk' : sub_course_pk,
-        'quiz_pk' : quiz_pk,
+        "form": form,
+        "course_pk": course_pk,
+        "sub_course_pk": sub_course_pk,
+        "quiz_pk": quiz_pk,
     }
-    return render(request, 'answer_management/answer_form.html', context)
+    return render(request, "answer_management/answer_form.html", context)
 
 
 @login_required
@@ -79,14 +97,30 @@ def answer_delete(request, course_pk, sub_course_pk, quiz_pk, question_pk, answe
     question = get_object_or_404(Question, pk=question_pk)
     answer = get_object_or_404(Answer_Option, pk=answer_pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         answer.delete()
         Quiz.objects.get(pk=quiz_pk).save()
 
-        return redirect(reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk': sub_course_pk, 'quiz_pk': quiz_pk}))
-    
+        return redirect(
+            reverse(
+                "course:quiz_detail",
+                kwargs={
+                    "course_pk": course_pk,
+                    "sub_course_pk": sub_course_pk,
+                    "quiz_pk": quiz_pk,
+                },
+            )
+        )
+
     context = {
-        'name': answer.option_text,
-        'cancel_link': reverse('course:quiz_detail', kwargs={'course_pk': course_pk, 'sub_course_pk': sub_course_pk, 'quiz_pk': quiz_pk})
+        "name": answer.option_text,
+        "cancel_link": reverse(
+            "course:quiz_detail",
+            kwargs={
+                "course_pk": course_pk,
+                "sub_course_pk": sub_course_pk,
+                "quiz_pk": quiz_pk,
+            },
+        ),
     }
-    return render(request, 'confirm_delete.html', context)
+    return render(request, "confirm_delete.html", context)

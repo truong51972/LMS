@@ -1,8 +1,8 @@
-function log_tab_behavior(time, behave){
+function log_tab_behavior(time, behavior){
 
     body = JSON.stringify({
         time: time,
-        behave: behave
+        behavior: behavior
     })
     console.log(body)
     fetch("tab_behavior_logger/", {
@@ -24,12 +24,12 @@ function log_tab_behavior(time, behave){
 window.addEventListener('blur', () => {
     time = Date.now();
     // console.log('Tab đã bị chuyển đi - ' + time);
-    log_tab_behavior(time=time, behave="blur")
+    log_tab_behavior(time=time, behavior="blur")
 });
 
 
 window.addEventListener('focus', () => {
     time = Date.now();
     // console.log('Tab đã được quay lại - ' + time);
-    log_tab_behavior(time=time, behave="focus")
+    log_tab_behavior(time=time, behavior="focus")
 });

@@ -4,6 +4,7 @@ from .views import sub_course_management
 from .views import module_management
 from .views import sub_module_management
 from .views import quiz_management
+from .views import quiz_report_management
 from .views import question_management
 from .views import answer_management
 from .views import course_operations
@@ -49,8 +50,8 @@ urlpatterns = [
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/delete/',quiz_management.quiz_delete,name='quiz_delete'),
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/move_up/',quiz_management.quiz_move_up,name='quiz_move_up'),
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/move_down/',quiz_management.quiz_move_down,name='quiz_move_down'),
-    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_list/',quiz_management.quiz_report_list,name='quiz_report_list'),
-    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_user/<int:user_pk>/attempt/<int:attempt_pk>/',quiz_management.quiz_report_detail,name='quiz_report_detail'),
+    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_list/',quiz_report_management.quiz_report_list,name='quiz_report_list'),
+    path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/quiz_report_user/<int:user_pk>/attempt/<int:attempt_pk>/',quiz_report_management.quiz_report_detail,name='quiz_report_detail'),
 
 
     path('<int:course_pk>/sub_course/<int:sub_course_pk>/quiz/<int:quiz_pk>/question/add',question_management.question_add,name='question_add'),

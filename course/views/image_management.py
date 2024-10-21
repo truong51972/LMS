@@ -20,29 +20,27 @@ def image_list(request, course_pk):
     module_groups = ModuleGroup.objects.all()
 
     context = {
-        'module_groups' : module_groups,
-        "course" : course,
-        "images" : images,
+        "module_groups": module_groups,
+        "course": course,
+        "images": images,
     }
-    return render(request, 'image_management/image_list.html', context)
+    return render(request, "image_management/image_list.html", context)
 
 
 @login_required
 @user_passes_test(block_student)
 def image_add(request, course_pk):
-    course = get_object_or_404(Course, pk= course_pk)
+    course = get_object_or_404(Course, pk=course_pk)
 
-    if request.method == 'POST':
-        for img in request.FILES.getlist('images'):
+    if request.method == "POST":
+        for img in request.FILES.getlist("images"):
             Image.objects.create(image=img, course=course)
-        return redirect(reverse('course:image_list', kwargs={'course_pk': course_pk}))
+        return redirect(reverse("course:image_list", kwargs={"course_pk": course_pk}))
     # else:
     #     pass
 
-    context = {
-        'course_pk' : course_pk
-    }
-    return render(request, 'image_management/image_form.html', context)
+    context = {"course_pk": course_pk}
+    return render(request, "image_management/image_form.html", context)
 
 
 @login_required
@@ -51,12 +49,12 @@ def image_delete(request, course_pk, image_pk):
     course = get_object_or_404(Course, pk=course_pk)
     image = get_object_or_404(Image, pk=image_pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         image.delete()
-        return redirect(reverse('course:image_list', kwargs={'course_pk': course_pk}))
-    
+        return redirect(reverse("course:image_list", kwargs={"course_pk": course_pk}))
+
     context = {
-        'name': image.image,
-        'cancel_link': reverse('course:image_list', kwargs={'course_pk': course_pk})
+        "name": image.image,
+        "cancel_link": reverse("course:image_list", kwargs={"course_pk": course_pk}),
     }
-    return render(request, 'confirm_delete.html', context)
+    return render(request, "confirm_delete.html", context)

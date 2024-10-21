@@ -19,7 +19,7 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-secondary" href="{% url 'course:sub_course_list' course.pk %}">Back</a>
+    <a class="btn btn-secondary" href="{% url 'course:quiz_report_list' course.pk sub_course.pk quiz.pk%}">Back</a>
 
 </div>
 <div class="container-fluid w-75 mt-5">
@@ -32,23 +32,28 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="attempted_quiz_tab" data-toggle="pill"
                         data-target="#attempted_quiz" type="button" role="tab" aria-controls="attempted_quiz"
-                        aria-selected="true">Attempted Quiz</button>
+                        aria-selected="true">Proctoring</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="proctoring-tab" data-toggle="pill" data-target="#proctoring"
-                        type="button" role="tab" aria-controls="proctoring" aria-selected="false">Proctoring</button>
+                        type="button" role="tab" aria-controls="proctoring" aria-selected="false">Attempted
+                        Quiz</button>
                 </li>
             </ul>
             <div class="d-flex flex-column" style="height: 90vh;">
                 <div class="flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
                     <div class="vh-100">
+                        <p><strong>Date: </strong>{{ attempt.attempt_date }}</p>
+                        <p><strong>Mark: </strong>{{ attempt.score }}</p>
+                        <p><strong>Duration: </strong><span class="time">{{ attempt.duration }}</span></p>
+                        <hr>
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="attempted_quiz" role="tabpanel"
                                 aria-labelledby="attempted_quiz_tab">
-                                {% include "quiz_management/quiz_report_detail_quiz.html" %}
+                                {% include "quiz_management/quiz_report_detail_proctoring.html" %}
                             </div>
                             <div class="tab-pane fade" id="proctoring" role="tabpanel" aria-labelledby="proctoring-tab">
-                                Proctoring
+                                {% include "quiz_management/quiz_report_detail_quiz.html" %}
                             </div>
                         </div>
                     </div>
@@ -62,6 +67,6 @@
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth'
-    });    
+    });
 </script>
 {% endblock %}
