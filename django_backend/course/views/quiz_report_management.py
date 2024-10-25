@@ -120,22 +120,25 @@ def gen_fig_face_behavior(proctoring_data, duration):
         if (last_num_faces == num_faces) and (last_face_behavior == behavior):
             continue
 
-        if time_start is None:
-            time_start = time
-        else:
+        if time_start is not None:
             face_behavior[last_face_behavior] = face_behavior.get(
                 last_face_behavior, 0
-            ) + ((time - time_start) / 1000)
-
+            ) + (time - time_start)
+            
+        time_start = time
         last_face_behavior = behavior
         last_num_faces = num_faces
+        
+    if len(face_behavior) == 0:
+        return '<h4 class="text-center">No Face Behavior Recoded!</h4>'
+
+    face_behavior = {key: round(value, 2) for key, value in face_behavior.items()}
+    face_behavior = dict(sorted(face_behavior.items(), key=lambda item: item[0]))
 
     other_behavior_time = sum(
         [value for key, value in face_behavior.items() if key is not last_face_behavior]
     )
 
-    if len(face_behavior) == 0:
-        return '<h4 class="text-center">No Face Behavior Recoded!</h4>'
 
     face_behavior[last_face_behavior] = (
         face_behavior.get(last_face_behavior, 0) + duration - other_behavior_time
@@ -212,7 +215,6 @@ def quiz_report_detail(request, course_pk, sub_course_pk, quiz_pk, user_pk, atte
             "proctoring_counter_div": proctoring_counter_div,
             "tab_behavior_div": tab_behavior_div,
             "face_behavior_div": face_behavior_div,
-            # "counter1": proctoring_counter_div,
         },
     }
 

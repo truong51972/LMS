@@ -96,23 +96,30 @@ WSGI_APPLICATION = 'lms_project.wsgi.application'
 if os.environ.get('USERNAME') == 'tranq':
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'LMS_database',
-            'USER': 'truong51972',
-            'PASSWORD': '51972',
-            'HOST': 'localhost',
-            'PORT': '3306',
-            'OPTIONS': {
-                'charset': 'utf8mb4',
-            },
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': 'LMS_database',
+    #         'USER': 'truong51972',
+    #         'PASSWORD': '51972',
+    #         'HOST': 'localhost',
+    #         'PORT': '3306',
+    #         'OPTIONS': {
+    #             'charset': 'utf8mb4',
+    #         },
+    #     }
+    # }
     AI_API_SERVER = {
         'HOST' : 'localhost',
         'PORT' : '8080',
         'IS_DDNS' : False
     }
-else:
+
+elif os.environ.get('USERNAME') == 'truong51972':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -128,10 +135,38 @@ else:
     }
     AI_API_SERVER = {
         'HOST' : 'truong51972.ddns.net',
-        'PORT' : '8080',
+        'PORT' : '8000',
         'IS_DDNS' : True
     }
-    
+else:
+    database_pwd = os.getenv("MYSQL_ROOT_PASSWORD")
+    database_name = os.getenv("MYSQL_DATABASE")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.mysql',
+    #         'NAME': database_name,
+    #         'USER': 'root',
+    #         'PASSWORD': database_pwd,
+    #         'HOST': 'mysql_database',
+    #         'PORT': '3306',
+    #         'OPTIONS': {
+    #             'charset': 'utf8mb4',
+    #         },
+    #     }
+    # }
+    AI_API_SERVER = {
+        'HOST' : 'truong51972.ddns.net',
+        'PORT' : '8000',
+        'IS_DDNS' : True
+    }
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -197,3 +232,6 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000  # 1 năm
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# config for https server
+CSRF_TRUSTED_ORIGINS = ['https://truong51972.ddns.net']

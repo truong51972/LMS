@@ -26,7 +26,8 @@ def _request(api_name: str, json: dict, verbose:bool=False):
             def __init__(self) -> None:
                 self.response = {
                     'message' : 'Server not Found!',
-                    'code': '404'
+                    'code': '404',
+                    'url': url,
                 }
             def json(self) -> dict[str, str]:
                 return self.response

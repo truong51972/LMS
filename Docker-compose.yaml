@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: 
+      context: ./nginx_service 
+    container_name: nginx_service
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    networks:
+      - app-network
+    depends_on:
+      - django
+    volumes:
+      - ./django_backend/static:/static
+      - ./django_backend/media:/media
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+  django:
+    build: 
+      context: ./django_backend 
+    container_name: django_backend
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./django_backend:/app
+    environment:
+      MYSQL_ROOT_PASSWORD: 51972
+      MYSQL_DATABASE: LMS_database
+    networks:
+      - app-network
+
+  model_api:
+    build: 
+      context: ./model_api 
+    container_name: model_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./model_api:/app
+    networks:
+      - app-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    
+#   mysql_database:
+#     image: mysql:latest
+#     container_name: mysql_database
+#     environment:
+#       MYSQL_ROOT_PASSWORD: 51972
+#       MYSQL_DATABASE: LMS_database
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - db_data:/var/lib/mysql
+
+# volumes:
+#   db_data:
+
+networks:
+  app-network:
+    driver: bridge
