@@ -3,7 +3,8 @@ version: '3.8'
 services:
   nginx:
     build: 
-      context: ./nginx_service 
+      context: ./nginx_service
+    image: nginx_service:v1.2
     container_name: nginx_service
     ports:
       - "80:80"
@@ -23,6 +24,7 @@ services:
     build: 
       context: ./django_backend 
     container_name: django_backend
+    image: django_backend:v1.1
     ports:
       - "8001:8001"
     volumes:
@@ -37,6 +39,7 @@ services:
     build: 
       context: ./model_api 
     container_name: model_api
+    image: model_api:v1.1
     ports:
       - "8000:8000"
     volumes:
@@ -50,6 +53,11 @@ services:
             - capabilities: [gpu]
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://host.docker.internal:80
+    restart: unless-stopped
     
 #   mysql_database:
 #     image: mysql:latest
