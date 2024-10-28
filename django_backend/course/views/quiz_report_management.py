@@ -151,7 +151,7 @@ def gen_fig_face_behavior(proctoring_data, duration):
         ]
     )
     face_behavior_fig.update_layout(
-        title={"text": "Tab behavior", "x": 0.5, "xanchor": "center"},
+        title={"text": "Face behavior", "x": 0.5, "xanchor": "center"},
     )
     face_behavior_div = face_behavior_fig.to_html(
         full_html=False, config={"responsive": True}

@@ -1,0 +1,2 @@
+[wsl2]
+kernelCommandLine = "sysctl.net.core.rmem_max=8388608 sysctl.net.core.wmem_max=8388608"

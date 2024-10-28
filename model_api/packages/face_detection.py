@@ -13,7 +13,7 @@ class Face_Detection():
         if self.device == 'cpu': self.logger.warning(f'"Cuda" is not detected. Using "Cpu"!')
         
         boxes, probs, points = self.mtcnn.detect(img, landmarks=True)
-        response = {}
+        data = {}
         if boxes is not None:
             for i, (box, prob, point) in enumerate(zip(boxes, probs, points)):
                 if True:
@@ -40,10 +40,10 @@ class Face_Detection():
                             (nose[0] < bbox[0] + margin_nose_x) or (nose[0] > bbox[2] - margin_nose_x)
                         ):
                         color = (0,0,255)
-                        response[f'face_{i}'] = 'unfocus'
+                        data[f'face_{i}'] = 'unfocus'
                     else:
                         color = (0,255,0)
-                        response[f'face_{i}'] = 'focus'
+                        data[f'face_{i}'] = 'focus'
 
                     img = cv2.rectangle(img,(bbox[0],bbox[1]),(bbox[2],bbox[3]),color, 1)
 
@@ -51,4 +51,4 @@ class Face_Detection():
                         p = list(map(int,p.tolist()))
                         cv2.circle(img, p, 1, [0, 0, 255], -1)
 
-        return img, response
+        return img, data

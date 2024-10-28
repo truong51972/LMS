@@ -36,8 +36,9 @@ class Face_Detection_Val(BaseModel):
 @app.post("/face_detector")
 async def face_detector(item: Face_Detection_Val):
     decoded_img = ultis.base64_2_img(base64_img=item.image)
-    img, response = face_detect_model.detect(img=decoded_img)
+    img, data = face_detect_model.detect(img=decoded_img)
     encoded_img = ultis.img_2_base64(img)
    
     # return {"image": encoded_img}
+    response = {'message': 'success!', 'data' : data}
     return response

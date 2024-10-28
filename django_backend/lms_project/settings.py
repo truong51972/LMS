@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
+import logging
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -161,10 +161,10 @@ else:
     #         },
     #     }
     # }
+
     AI_API_SERVER = {
-        'HOST' : 'truong51972.ddns.net',
-        'PORT' : '8000',
-        'IS_DDNS' : True
+        'HOST' : os.environ.get('AI_API_SERVER_HOST'),
+        'PORT' : os.environ.get('AI_API_SERVER_PORT'),
     }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -182,10 +182,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Ho_Chi_Minh'
@@ -194,14 +190,6 @@ USE_TZ = False
 
 USE_I18N = True
 
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -234,4 +222,8 @@ SECURE_HSTS_SECONDS = 31536000  # 1 năm
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # config for https server
-CSRF_TRUSTED_ORIGINS = ['https://truong51972.ddns.net']
+CSRF_TRUSTED_ORIGINS = ['https://truong51972.ddns.net', 'https://lms.truong51972.id.vn']
+
+logging.basicConfig(
+    level=logging.INFO, format='%(levelname)-4s - "%(name)s": %(message)s'
+)

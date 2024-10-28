@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   nginx:
     build: 
       context: ./nginx_service
-    image: nginx_service:v1.2
+    image: nginx_service:v1.6
     container_name: nginx_service
     ports:
       - "80:80"
-      - "443:443"
+      # - "443:443"
       - "8080:8080"
     networks:
       - app-network
@@ -24,14 +22,14 @@ services:
     build: 
       context: ./django_backend 
     container_name: django_backend
-    image: django_backend:v1.1
+    image: django_backend:v1.2
     ports:
       - "8001:8001"
     volumes:
       - ./django_backend:/app
     environment:
-      MYSQL_ROOT_PASSWORD: 51972
-      MYSQL_DATABASE: LMS_database
+      AI_API_SERVER_HOST: 'model_api' # 'truong51972.ddns.net' if wanna deploy api server outside
+      AI_API_SERVER_PORT: '8000'
     networks:
       - app-network
 
@@ -56,9 +54,14 @@ services:
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate --url http://host.docker.internal:80
+    container_name: cloudflared_tunnel
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     restart: unless-stopped
-    
+    networks:
+      - app-network
+    # sysctls:
+    #   net.core.rmem_max: 7500000
+    #   net.core.wmem_max: 7500000
 #   mysql_database:
 #     image: mysql:latest
 #     container_name: mysql_database

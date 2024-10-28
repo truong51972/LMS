@@ -5,6 +5,7 @@ from django.core.cache import cache
 
 import json
 import datetime
+import logging
 
 from ..models import *
 
@@ -34,29 +35,31 @@ def tab_behavior_logger(request, course_pk, course_name, quiz_pk, attempt_pk):
 def face_detector(request, course_pk, course_name, quiz_pk, attempt_pk):
     if request.method == "POST":
         data = json.loads(request.body)
-        response = _request(api_name="face_detector", json=data).json()
+        
+        response = _request(api_name="face_detector", json=data)
 
+        data = response.get('data', {})
         last_face_behavior_state = cache.get(
             f"face_behavior_{request.user.id}_{attempt_pk}", None
         )
-        cache.set(f"face_behavior_{request.user.id}_{attempt_pk}", response, timeout=10)
+        cache.set(f"face_behavior_{request.user.id}_{attempt_pk}", data, timeout=10)
 
         attempt = get_object_or_404(Student_Quiz_Attempt, pk=attempt_pk)
         attempt.is_proctored = True
 
-        if (last_face_behavior_state is None) or (last_face_behavior_state != response):
+        if (last_face_behavior_state is None) or (last_face_behavior_state != data):
             face_behavior = attempt.proctoring_data.get("face_behavior", {})
 
-            # data_temp = response.copy()
-            response["time"] = datetime.datetime.now().timestamp()
+            # data_temp = data.copy()
+            data["time"] = datetime.datetime.now().timestamp()
 
-            face_behavior[len(face_behavior)] = response
+            face_behavior[len(face_behavior)] = data
 
             attempt.proctoring_data["face_behavior"] = face_behavior
 
         attempt.save()
 
         # print(response.json())
-        return JsonResponse(response)
+        return JsonResponse(data)
         # return JsonResponse({"status": "ok"})
     return JsonResponse({"status": "error"}, status=400)

@@ -4,13 +4,12 @@ from django.conf import settings
 import re
 import logging
 from typing import Optional, Union
-
-logging.basicConfig(
-    level=logging.INFO, format='%(levelname)-9s "%(name)s": %(message)s'
-)
+import inspect
 
 
 def __check_ip_or_dns(input_string):
+    local_service_pattern = re.compile(r'^[a-zA-Z0-9-_]+$')
+                         
     ip_pattern = re.compile(
         r"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
     )
@@ -22,6 +21,8 @@ def __check_ip_or_dns(input_string):
         return "IP"
     elif domain_pattern.match(input_string):
         return "DNS"
+    elif local_service_pattern.match(input_string):
+        return "Local"
     else:
         return None
 
@@ -36,15 +37,17 @@ def _request(
     json: dict,
     host: Optional[str] = None,
     port: Optional[str] = None,
-    protocol: Optional[str] = "http",
-    verbose: bool = False,
+    protocol: str = "http",
+    verbose: bool = True,
 ):
     if host is None:
         host = settings.AI_API_SERVER["HOST"]
         port = settings.AI_API_SERVER["PORT"]
-    logger = logging.getLogger(__name__)
 
     base_url = "{}://{}:{}/{}"
+
+    caller_frame = inspect.stack()[1]
+    logger = logging.getLogger(f"{caller_frame.filename} => {caller_frame.function}()")
 
     try:
         checked_host = __check_ip_or_dns(host)
@@ -61,50 +64,41 @@ def _request(
             logger.info(f"Sending request to: '{url}'!")
 
         response = requests.post(url, json=json, timeout=5)
-        response.raise_for_status()
+        # response.raise_for_status()
+
+        message = response.json()["message"]
+        is_error = False
 
     except AssertionError as e:
         message = e
-        code = "500"
+        is_error = True
     except requests.exceptions.Timeout:
         message = "Request Timeout!"
-        code = "408"
+        is_error = True
     except requests.exceptions.ConnectionError:
         message = "Connection error!"
-        code = "404"
+        is_error = True
     except requests.exceptions.HTTPError as err:
         message = f"HTTP error occurred: {err}!"
-        code = "404"
+        is_error = True
     except requests.exceptions.RequestException as err:
         message = f"An error occurred: {err}!"
-        code = "404"
-    else:
-        return response
+        is_error = True
     finally:
-        if verbose:
-            logger.error(message)
-
-        class Response:
-            def __init__(self) -> None:
-                self.response = {
-                    "message": message,
-                    "code": code,
-                    "url": url,
-                }
-
-            def json(self) -> dict[str, str]:
-                return self.response
-
-        response = Response()
-        return response
+        if is_error:
+            if verbose:
+                logger.error(message)
+            return {"message": message}
+        else:
+            return response.json()
 
 
 if __name__ == "__main__":
     valid_ip = "192.168.1.1"
     valid_dns = "truong51972.ddns.net"
-    invalid = "1hasfo"
+    invalid = None
 
     api_name = "haah"
     data = {"test": "haha"}
 
-    _request(api_name, data, valid_dns, "8000", True)
+    _request(api_name, data, invalid, "8000", verbose=True)
