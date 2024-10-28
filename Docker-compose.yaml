@@ -56,9 +56,9 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared_tunnel
     command: tunnel run
-    restart: unless-stopped
+    restart: always
     environment:
-      - TUNNEL_TRANSPORT_PROTOCOL=quic
+      # - TUNNEL_TRANSPORT_PROTOCOL=quic
       - TUNNEL_ORIGIN_KEEPALIVE_TIMEOUT=30s
       - "TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}"
       - NO_AUTOUPDATE
@@ -66,7 +66,7 @@ services:
       test: ["CMD", "cloudflared", "--version"]
       interval: 30s
       timeout: 10s
-      retries: 7
+      retries: 3
       start_period: 10s
     networks:
       - app-network
